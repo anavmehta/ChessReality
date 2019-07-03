@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<Scheme version="1.3" LastUpgradeVersion="1100">
+<Scheme LastUpgradeVersion="1100" version="1.3">
 	<AnalyzeAction buildConfiguration="Debug" />
 	<ArchiveAction buildConfiguration="Release" revealArchiveInOrganizer="YES" />
-	<TestAction selectedDebuggerIdentifier="Xcode.DebuggerFoundation.Debugger.LLDB" codeCoverageEnabled="NO" selectedLauncherIdentifier="Xcode.DebuggerFoundation.Launcher.LLDB" shouldUseLaunchSchemeArgsEnv="YES" buildConfiguration="Debug">
+	<TestAction selectedDebuggerIdentifier="Xcode.DebuggerFoundation.Debugger.LLDB" buildConfiguration="Debug" selectedLauncherIdentifier="Xcode.DebuggerFoundation.Launcher.LLDB" shouldUseLaunchSchemeArgsEnv="YES" codeCoverageEnabled="NO">
 		<Testables />
 	</TestAction>
-	<ProfileAction shouldUseLaunchSchemeArgsEnv="YES" savedToolIdentifier="" buildConfiguration="Release" useCustomWorkingDirectory="NO" debugDocumentVersioning="YES">
+	<ProfileAction buildConfiguration="Release" shouldUseLaunchSchemeArgsEnv="YES" savedToolIdentifier="" useCustomWorkingDirectory="NO" debugDocumentVersioning="YES">
 		<BuildableProductRunnable runnableDebuggingMode="0">
-			<BuildableReference ReferencedContainer="container:SwiftStrikeTabletop.xcodeproj" BuildableIdentifier="primary" BlueprintIdentifier="38A496EF229F8FA500C02FD0" BuildableName="SwiftStrikeTabletop.app" BlueprintName="SwiftStrikeTabletop" />
+			<BuildableReference BlueprintName="SwiftStrikeTabletop" BuildableName="SwiftStrikeTabletop.app" ReferencedContainer="container:SwiftStrikeTabletop.xcodeproj" BuildableIdentifier="primary" BlueprintIdentifier="38A496EF229F8FA500C02FD0" />
 		</BuildableProductRunnable>
 	</ProfileAction>
 	<BuildAction buildImplicitDependencies="YES" parallelizeBuildables="YES">
 		<BuildActionEntries>
-			<BuildActionEntry buildForAnalyzing="YES" buildForProfiling="YES" buildForTesting="YES" buildForRunning="YES" buildForArchiving="YES">
-				<BuildableReference ReferencedContainer="container:SwiftStrikeTabletop.xcodeproj" BuildableIdentifier="primary" BlueprintName="SwiftStrikeTabletop" BuildableName="SwiftStrikeTabletop.app" BlueprintIdentifier="38A496EF229F8FA500C02FD0" />
+			<BuildActionEntry buildForArchiving="YES" buildForAnalyzing="YES" buildForTesting="YES" buildForRunning="YES" buildForProfiling="YES">
+				<BuildableReference BlueprintIdentifier="38A496EF229F8FA500C02FD0" ReferencedContainer="container:SwiftStrikeTabletop.xcodeproj" BuildableIdentifier="primary" BlueprintName="SwiftStrikeTabletop" BuildableName="SwiftStrikeTabletop.app" />
 			</BuildActionEntry>
 		</BuildActionEntries>
 	</BuildAction>
-	<LaunchAction ignoresPersistentStateOnLaunch="NO" selectedLauncherIdentifier="Xcode.DebuggerFoundation.Launcher.LLDB" buildConfiguration="Debug" selectedDebuggerIdentifier="Xcode.DebuggerFoundation.Debugger.LLDB" launchStyle="0" allowLocationSimulation="YES" debugServiceExtension="internal" debugDocumentVersioning="YES" useCustomWorkingDirectory="NO">
+	<LaunchAction selectedLauncherIdentifier="Xcode.DebuggerFoundation.Launcher.LLDB" launchStyle="0" allowLocationSimulation="YES" buildConfiguration="Debug" ignoresPersistentStateOnLaunch="NO" useCustomWorkingDirectory="NO" debugDocumentVersioning="YES" debugServiceExtension="internal" selectedDebuggerIdentifier="Xcode.DebuggerFoundation.Debugger.LLDB">
 		<BuildableProductRunnable runnableDebuggingMode="0">
-			<BuildableReference ReferencedContainer="container:SwiftStrikeTabletop.xcodeproj" BlueprintIdentifier="38A496EF229F8FA500C02FD0" BuildableIdentifier="primary" BuildableName="SwiftStrikeTabletop.app" BlueprintName="SwiftStrikeTabletop" />
+			<BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="38A496EF229F8FA500C02FD0" BlueprintName="SwiftStrikeTabletop" ReferencedContainer="container:SwiftStrikeTabletop.xcodeproj" BuildableName="SwiftStrikeTabletop.app" />
 		</BuildableProductRunnable>
 	</LaunchAction>
 </Scheme>

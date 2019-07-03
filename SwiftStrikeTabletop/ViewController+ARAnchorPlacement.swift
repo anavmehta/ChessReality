@@ -61,7 +61,7 @@ extension ViewController: ARSessionDelegate {
 
         // Remove the coaching overlay view
         self.coachingOverlay.delegate = nil
-        self.coachingOverlay.isActive = false
+        self.coachingOverlay.setActive(false, animated: false)
         self.coachingOverlay.removeFromSuperview()
 
         // Now that an anchor has been found, remove the view controller as a delegate to stop receiving updates per-frame

@@ -218,17 +218,21 @@ extension Experience {
             guard state != currentState else { return }
             
             func transitionToAppStart() {
-                Experience.loadGameAsync { [weak self] game, error in
-                    guard let game = game else { return }
-                    guard let self = self else { return }
-                    
-                    if self.gameAnchor == nil {
-                        self.gameAnchor = game
-                        self.observer?.gameControllerContentDidLoad(self)
-                    }
-                    
-                    if case let .waitingForContent(nextState) = self.currentState {
-                        self.transition(to: nextState)
+                Experience.loadGameAsync { [weak self] result in
+                    switch result {
+                    case .success(let game):
+                        guard let self = self else { return }
+                        
+                        if self.gameAnchor == nil {
+                            self.gameAnchor = game
+                            self.observer?.gameControllerContentDidLoad(self)
+                        }
+                        
+                        if case let .waitingForContent(nextState) = self.currentState {
+                            self.transition(to: nextState)
+                        }
+                    case .failure(let error):
+                        print("Unable to load the game with error: \(error.localizedDescription)")
                     }
                 }
                 

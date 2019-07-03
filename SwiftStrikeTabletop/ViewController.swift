@@ -66,7 +66,7 @@ class ViewController: UIViewController {
         coachingOverlay.delegate = self
         coachingOverlay.goal = .horizontalPlane
         coachingOverlay.activatesAutomatically = false
-        coachingOverlay.isActive = true
+        self.coachingOverlay.setActive(false, animated: false)
     }
 
     /// Updates the game state when the user taps the game state button.

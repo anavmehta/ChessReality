@@ -36,16 +36,16 @@
 		38A496FF229F8FA600C02FD0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		38A49701229F8FA600C02FD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		38D860A622A2F74A004E7E74 /* ViewController+ARAnchorPlacement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+ARAnchorPlacement.swift"; sourceTree = "<group>"; };
-		53C5088053C4FF7000000001 /* SampleCode.xcconfig */ = {isa = PBXFileReference; name = SampleCode.xcconfig; path = Configuration/SampleCode.xcconfig; sourceTree = "<group>"; };
 		558987A722A2260B00092D21 /* GameActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameActionButton.swift; sourceTree = "<group>"; };
 		5591175222A2065F00E37D15 /* iPhone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iPhone.png; sourceTree = "<group>"; };
 		5591175322A2065F00E37D15 /* iPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iPad.png; sourceTree = "<group>"; };
 		55E30F9022A2E45700AC160E /* iPhone-menu.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iPhone-menu.png"; sourceTree = "<group>"; };
 		55E30F9122A2E45700AC160E /* iPad-menu.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iPad-menu.png"; sourceTree = "<group>"; };
 		7143BA0C22A161CE008D568E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		82C95DD082C977A000000001 /* SampleCode.xcconfig */ = {isa = PBXFileReference; name = SampleCode.xcconfig; path = Configuration/SampleCode.xcconfig; sourceTree = "<group>"; };
+		84D1513084D27E9000000001 /* LICENSE.txt */ = {isa = PBXFileReference; includeInIndex = 1; path = LICENSE.txt; sourceTree = "<group>"; };
 		C10FC08522A20C4100E56047 /* GameController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameController.swift; sourceTree = "<group>"; };
 		C1C93E3122A0DAC1005332A5 /* GameSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSettings.swift; sourceTree = "<group>"; };
-		D3DB76C0D3DB729000000001 /* LICENSE.txt */ = {isa = PBXFileReference; includeInIndex = 1; path = LICENSE.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,8 +65,8 @@
 				7143BA0C22A161CE008D568E /* README.md */,
 				38A496F2229F8FA500C02FD0 /* SwiftStrikeTabletop */,
 				38A496F1229F8FA500C02FD0 /* Products */,
-				53C403E053C50AE000000001 /* Configuration */,
-				D3DB8870D3DB9F9000000001 /* LICENSE */,
+				82CAF82082CABC3000000001 /* Configuration */,
+				84D16A5084D27D1000000001 /* LICENSE */,
 			);
 			sourceTree = "<group>";
 		};
@@ -99,14 +99,6 @@
 			path = SwiftStrikeTabletop;
 			sourceTree = "<group>";
 		};
-		53C403E053C50AE000000001 /* Configuration */ = {
-			isa = PBXGroup;
-			children = (
-				53C5088053C4FF7000000001 /* SampleCode.xcconfig */,
-			);
-			name = Configuration;
-			sourceTree = "<group>";
-		};
 		5526CF0B22A2E161003E07C3 /* Menu Screens */ = {
 			isa = PBXGroup;
 			children = (
@@ -125,10 +117,18 @@
 			path = "Launch Screens";
 			sourceTree = "<group>";
 		};
-		D3DB8870D3DB9F9000000001 /* LICENSE */ = {
+		82CAF82082CABC3000000001 /* Configuration */ = {
 			isa = PBXGroup;
 			children = (
-				D3DB76C0D3DB729000000001 /* LICENSE.txt */,
+				82C95DD082C977A000000001 /* SampleCode.xcconfig */,
+			);
+			name = Configuration;
+			sourceTree = "<group>";
+		};
+		84D16A5084D27D1000000001 /* LICENSE */ = {
+			isa = PBXGroup;
+			children = (
+				84D1513084D27E9000000001 /* LICENSE.txt */,
 			);
 			name = LICENSE;
 			path = LICENSE;
@@ -246,7 +246,7 @@
 /* Begin XCBuildConfiguration section */
 		38A49702229F8FA600C02FD0 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 53C5088053C4FF7000000001 /* SampleCode.xcconfig */;
+			baseConfigurationReference = 82C95DD082C977A000000001 /* SampleCode.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -307,7 +307,7 @@
 		};
 		38A49703229F8FA600C02FD0 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 53C5088053C4FF7000000001 /* SampleCode.xcconfig */;
+			baseConfigurationReference = 82C95DD082C977A000000001 /* SampleCode.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -362,7 +362,7 @@
 		};
 		38A49705229F8FA600C02FD0 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 53C5088053C4FF7000000001 /* SampleCode.xcconfig */;
+			baseConfigurationReference = 82C95DD082C977A000000001 /* SampleCode.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -382,7 +382,7 @@
 		};
 		38A49706229F8FA600C02FD0 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 53C5088053C4FF7000000001 /* SampleCode.xcconfig */;
+			baseConfigurationReference = 82C95DD082C977A000000001 /* SampleCode.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
