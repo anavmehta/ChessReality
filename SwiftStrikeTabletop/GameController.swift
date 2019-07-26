@@ -309,7 +309,10 @@ extension Experience.Game {
     var allObstactles: [Entity?] {
         return [level2Obstacles,
                 level3Obstacles,
-                level4Obstacles]
+                level4Obstacles1,
+                level4Obstacles2,
+                level4Obstacles3,
+                level4Obstacles4]
     }
     
     var toHideOnStart: [Entity?] {

@@ -9,6 +9,7 @@ import UIKit
 import ARKit
 import RealityKit
 import simd
+import Combine
 
 class ViewController: UIViewController {
     
@@ -35,6 +36,13 @@ class ViewController: UIViewController {
     
     /// The world location at which the current translate gesture began.
     var gestureStartLocation: SIMD3<Float>?
+
+    /// Storage for collision event streams
+    var collisionEventStreams = [AnyCancellable]()
+
+    deinit {
+        collisionEventStreams.removeAll()
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,7 +74,7 @@ class ViewController: UIViewController {
         coachingOverlay.delegate = self
         coachingOverlay.goal = .horizontalPlane
         coachingOverlay.activatesAutomatically = false
-        self.coachingOverlay.setActive(false, animated: false)
+        self.coachingOverlay.setActive(true, animated: true)
     }
 
     /// Updates the game state when the user taps the game state button.
@@ -222,8 +230,7 @@ class ViewController: UIViewController {
             clampedZ = settings.ballVelocityMinZ
         }
         let clampedVelocity: SIMD3<Float> = [clampedX, 0.0, clampedZ]
-        let worldVelocity = ball.parent!.convert(direction: clampedVelocity, to: nil)
-        ball.physicsMotion?.linearVelocity = worldVelocity
+        ball.physicsMotion?.linearVelocity = clampedVelocity
     }
 
 }
@@ -325,13 +332,13 @@ extension ViewController: GameControllerObserver {
             // Subscribe to collision events and send them to the GameController
             arView.scene.subscribe(to: CollisionEvents.Began.self) { event in
                 gameController.collisionChange(first: event.entityA, second: event.entityB)
-            }
+            }.store(in: &collisionEventStreams)
             arView.scene.subscribe(to: CollisionEvents.Updated.self) { event in
                 gameController.collisionChange(first: event.entityA, second: event.entityB)
-            }
+            }.store(in: &collisionEventStreams)
             arView.scene.subscribe(to: CollisionEvents.Ended.self) { event in
                 gameController.collisionChange(first: event.entityA, second: event.entityB)
-            }
+            }.store(in: &collisionEventStreams)
         }
         
         resetCurrentGameLevel()
