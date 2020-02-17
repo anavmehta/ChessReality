@@ -12,7 +12,8 @@ import MultipeerConnectivity
 class MultipeerSession: NSObject {
     static let serviceType = "ChessReality"
     
-    private let myPeerID = MCPeerID(displayName: UIDevice.current.name)
+    let myPeerID = MCPeerID(displayName: UIDevice.current.name)
+    var clientPeerID: MCPeerID?
     private var session: MCSession!
     private var serviceAdvertiser: MCNearbyServiceAdvertiser!
     private var serviceBrowser: MCNearbyServiceBrowser!
@@ -43,6 +44,7 @@ class MultipeerSession: NSObject {
         super.init()
         
         session = MCSession(peer: myPeerID, securityIdentity: nil, encryptionPreference: .required)
+        //session = MCSession(peer: myPeerID, securityIdentity: nil, encryptionPreference: MCEncryptionPreference.none)
         session.delegate = self
         
         serviceAdvertiser = MCNearbyServiceAdvertiser(peer: myPeerID, discoveryInfo: nil, serviceType: MultipeerSession.serviceType)
@@ -54,7 +56,7 @@ class MultipeerSession: NSObject {
         serviceBrowser.startBrowsingForPeers()
     }
     
-    func sendToAllPeers(_ data: Data) {
+    public func sendToAllPeers(_ data: Data) {
         do {
             try session.send(data, toPeers: session.connectedPeers, with: .reliable)
         } catch {
@@ -63,7 +65,7 @@ class MultipeerSession: NSObject {
     }
     
     /// - Tag: SendToPeers
-    func sendToPeers(_ data: Data, reliably: Bool, peers: [MCPeerID]) {
+    public func sendToPeers(_ data: Data, reliably: Bool, peers: [MCPeerID]) {
         guard !peers.isEmpty else { return }
         do {
             try session.send(data, toPeers: peers, with: reliably ? .reliable : .unreliable)
@@ -72,7 +74,7 @@ class MultipeerSession: NSObject {
         }
     }
     
-    var connectedPeers: [MCPeerID] {
+    public var connectedPeers: [MCPeerID] {
         return session.connectedPeers
     }
     
@@ -81,7 +83,7 @@ class MultipeerSession: NSObject {
 
 extension MultipeerSession: MCSessionDelegate {
     
-    func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
+    public func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
         // not used
         if state == .connected {
             peerJoinedHandler(peerID)
@@ -90,21 +92,21 @@ extension MultipeerSession: MCSessionDelegate {
         }
     }
     
-    func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
+    public func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
         receivedDataHandler(data, peerID)
     }
     
-    func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
+    public func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
         //receivedStream?(stream, streamName, peerID)
         fatalError("This service does not send/receive streams.")
     }
     
-    func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {
+    public func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {
         //receivingResource?(resourceName, peerID, progress)
         fatalError("This service does not send/receive resources.")
     }
     
-    func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: Error?) {
+    public func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: Error?) {
         //receivedResource?(resourceName, peerID, localURL, error)
         fatalError("This service does not send/receive resources.")
     }
@@ -116,8 +118,9 @@ extension MultipeerSession: MCNearbyServiceBrowserDelegate {
     /// - Tag: FoundPeer
     public func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String: String]?) {
         // Invite the new peer to the session.
-        if self.session.connectedPeers.count < 2  {
-            browser.invitePeer(peerID, to: session, withContext: nil, timeout: 30)
+        let accepted = peerDiscoveredHandler(peerID)
+        if accepted && (self.session.connectedPeers.count < 2)  {
+            browser.invitePeer(peerID, to: session, withContext: nil, timeout: 10)
         }
     }
 
@@ -132,6 +135,8 @@ extension MultipeerSession: MCNearbyServiceAdvertiserDelegate {
     /// - Tag: AcceptInvite
     func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
         // Call handler to accept invitation and join the session.
+        clientPeerID = peerID
+ 
         invitationHandler(true, self.session)
     }
 
