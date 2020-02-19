@@ -109,47 +109,57 @@ extension ViewController {
         return(false)
     }
     
+    func highlightCommand(coords: [(Int, Int)]) -> String {
+        var str: String = "show"
+        for c in coords {
+            str=str+" \(c.0),\(c.1)"
+        }
+        return(str)
+    }
+    func board2position(str:String) -> (Int, Int) {
+        var start = str.index(str.startIndex, offsetBy: 3)
+        var end = str.index(str.startIndex, offsetBy: 4)
+        var range = start..<end
+        let i = Int(str[range])!
+        start = str.index(str.startIndex, offsetBy: 5)
+        end = str.index(str.startIndex, offsetBy: 6)
+        range = start..<end
+        let j = Int(str[range])!
+        return (i,j)
+    }
+    func board2piece(str:String) -> Entity {
+        var start = str.index(str.startIndex, offsetBy: 3)
+        var end = str.index(str.startIndex, offsetBy: 4)
+        var range = start..<end
+        let i = Int(str[range])!
+        start = str.index(str.startIndex, offsetBy: 5)
+        end = str.index(str.startIndex, offsetBy: 6)
+        range = start..<end
+        let j = Int(str[range])!
+ 
+        let entity:Entity=game.findEntity(named: position[i][j])!
+        return(entity)
+    }
     func isBoard(entity: Entity) -> Bool{
-        if(entity.name == "cb"){return(true)}
-        return(false)
+        if(isPiece(entity: entity)) {return(false)}
+        return(true)
+    }
+    
+    func pieceName(str:String) -> String{
+        var start = str.index(str.startIndex, offsetBy: 3)
+        var end = str.index(str.startIndex, offsetBy: 4)
+        var range = start..<end
+        let i = Int(str[range])!
+        start = str.index(str.startIndex, offsetBy: 5)
+        end = str.index(str.startIndex, offsetBy: 6)
+        range = start..<end
+        let j = Int(str[range])!
+        return(position[i][j])
     }
     
     func isPiece(entity: Entity) -> Bool{
-        if(entity.name == "wr0"){return(true)}
-        if(entity.name == "wn0"){return(true)}
-        if(entity.name == "wb0"){return(true)}
-        if(entity.name == "wq"){return(true)}
-        if(entity.name == "wk"){return(true)}
-        if(entity.name == "wb1"){return(true)}
-        if(entity.name == "wn1"){return(true)}
-        if(entity.name == "wr1"){return(true)}
-        if(entity.name == "wp0"){return(true)}
-        if(entity.name == "wp1"){return(true)}
-        if(entity.name == "wp2"){return(true)}
-        if(entity.name == "wp3"){return(true)}
-        if(entity.name == "wp4"){return(true)}
-        if(entity.name == "wp5"){return(true)}
-        if(entity.name == "wp6"){return(true)}
-        if(entity.name == "wp7"){return(true)}
-        
-        if(entity.name == "br0"){return(true)}
-        if(entity.name == "bn0"){return(true)}
-        if(entity.name == "bb0"){return(true)}
-        if(entity.name == "bq"){return(true)}
-        if(entity.name == "bk"){return(true)}
-        if(entity.name == "br1"){return(true)}
-        if(entity.name == "bb1"){return(true)}
-        if(entity.name == "bn1"){return(true)}
-        if(entity.name == "bp0"){return(true)}
-        if(entity.name == "bp1"){return(true)}
-        if(entity.name == "bp2"){return(true)}
-        if(entity.name == "bp3"){return(true)}
-        if(entity.name == "bp4"){return(true)}
-        if(entity.name == "bp5"){return(true)}
-        if(entity.name == "bp6"){return(true)}
-        if(entity.name == "bp7"){return(true)}
-        
-        return(false)
+        if(pieceName(str: entity.name) != "") {return(true)}
+        else {return(false)}
     }
     
     func entity2color(str: String) -> Color {
@@ -487,7 +497,7 @@ extension ViewController {
                 }
                 if(y == 6) {
                     if(isValid(x: x, y:y-2)) {
-                        if(isAvailable(x:x,y:y-2) && isAvailable(x:x,y:y-2)) {
+                        if(isAvailable(x:x,y:y-2)) {
                             retArr.append((x, y-2))
                         }
                     }
@@ -499,7 +509,7 @@ extension ViewController {
                     }
                 }
                 if(isValid(x:x-1,y:y-1)) {
-                    if(!isAvailable(x:x-1, y:y-1) && isOppositeColor(x:x+1,y:y-1, color:color)) {
+                    if(!isAvailable(x:x-1, y:y-1) && isOppositeColor(x:x-1,y:y-1, color:color)) {
                         retArr.append((x-1,y-1))
                         
                     }
@@ -512,7 +522,7 @@ extension ViewController {
                 }
                 if(y == 1) {
                     if(isValid(x: x, y:y+2)) {
-                        if(isAvailable(x: x, y:y+2) && isAvailable(x:x,y:y+2)) {
+                        if(isAvailable(x: x, y:y+2)) {
                             retArr.append((x, y+2))
                         }
                     }
@@ -605,17 +615,18 @@ extension ViewController {
         return (srow, scol, erow, ecol)
     }
     
-    func updateBoard(pieceName: String, sx: Int, sy: Int, tx: Int, ty: Int) {
+    func updateBoard(sx: Int, sy: Int, tx: Int, ty: Int) {
+        let pieceName: String = position[sx][sy]
         position[sx][sy] = ""
         if(position[tx][ty] != "") {
             let entity: Entity! = arView.scene.findEntity(named: position[tx][ty])
-            entity.removeFromParent()
+            //entity.removeFromParent()
             entity.isEnabled = false
         }
         position[tx][ty] = pieceName
     }
     
-    func algebraicNotation(srow: Int, scol: Int, erow: Int, ecol: Int, piece: Piece, color: Color) {
+    func algebraicNotation(srow: Int, scol: Int, erow: Int, ecol: Int) {
         var s: String = ""
         let spiece: String = position[srow][scol]
         let epiece: String = position[erow][ecol]
@@ -639,8 +650,7 @@ extension ViewController {
         recordBanner.text = recordBanner.text + s
     }
     
-    
-    
+  
     func setupOverlay() {
         
         let cb: Entity! = game.findEntity(named: "cb")
@@ -673,21 +683,25 @@ extension ViewController {
             }
         }
     }
-    
-    func displayMove() {
-        var col: Color = .black
-        if(curColor == "w") {col = .white}
-        let cb: Entity! = arView.scene.findEntity(named: "cb")
-        let (srow, scol, erow, ecol) = translateMove(move: bestMoveNext)
-        let pieceName = position[srow][scol]
+
+    func movePiece(sx: Int, sy: Int, tx: Int, ty: Int){
+        let pieceName = position[sx][sy]
         let piece: Entity! = arView.scene.findEntity(named: pieceName)
-        let (x, _, z) = boardCoord(i: erow, j: ecol, piece:.empty)
-        piece.setPosition([x, 0.0, z], relativeTo: cb)
-        algebraicNotation(srow: srow, scol: scol, erow: erow, ecol: ecol, piece: entity2piece(str: piece.name), color: col)
-        updateBoard(pieceName: pieceName, sx: srow, sy: scol, tx: erow, ty: ecol)
-        displayCell(x: erow, y: ecol)
+        let (x, y, z) = boardCoord(i: tx, j: ty, piece:entity2piece(str: pieceName))
+        piece.setPosition([x, y, z], relativeTo: game)
+        algebraicNotation(srow: sx, scol: sy, erow: tx, ecol: ty)
+        updateBoard(sx: sx, sy: sy, tx: tx, ty: ty)
+        removeOverlay()
+        displayCell(x: tx, y: ty)
+    }
+    func displayMove() {
+
+        let (sx, sy, tx, ty) = translateMove(move: bestMoveNext)
+        movePiece(sx: sx, sy: sy, tx: tx, ty: ty)
         bestMoveNext = ""
     }
+    
+
     
     func setupChessBoard() {
         var chessBoxes: [[ModelEntity]] = Array<[ModelEntity]>(repeating: Array<ModelEntity>(repeating: ModelEntity(), count: 8), count:8)
@@ -701,13 +715,7 @@ extension ViewController {
             mode: .trigger,
             filter: .sensor
         )
-        let collisionCompBoard = CollisionComponent(
-            shapes: [.generateBox(size: [0.4,0.001,0.4])],
-            mode: .trigger,
-            filter: .sensor
-        )
-        
-        
+
         var white_material = SimpleMaterial()
         white_material.baseColor = MaterialColorParameter.color(.init(red: 1.0,
                                                                       green: 1.0,
@@ -725,14 +733,18 @@ extension ViewController {
         black_material.metallic = MaterialScalarParameter(floatLiteral: 0.0)
         let red_material = SimpleMaterial(color: .red, isMetallic: false)
         game = Entity()
+        //game.synchronization = SynchronizationComponent()
+        //game.components.set(SynchronizationComponent())
+        //game.synchronization?.ownershipTransferMode = .au
         game.name = "game"
+        game.synchronization = nil
         
         
         var material: SimpleMaterial!
         let cb = Entity()
         cb.name = "cb"
-        cb.components.set(collisionCompBoard)
         game.addChild(cb)
+ 
         
         var box = MeshResource.generateBox(size: [0.5,0,0.5]) // Generate mesh
         let leftBox = ModelEntity(mesh: box, materials: [white_material])
@@ -779,11 +791,9 @@ extension ViewController {
         }
         
         
-
-        
-        
         box = MeshResource.generateBox(size: [0.05,0.01,0.05]) // Generate mesh
         let url = Bundle.main.url(forResource: "chess_pieces", withExtension: "usdz")!
+        
         let pieces: Entity = try! Entity.load(contentsOf: url)
         
         for i in 0...7 {
@@ -791,8 +801,10 @@ extension ViewController {
                 if((i+j) % 2 == 0) {material = white_material}
                 else {material = black_material}
                 chessBoxes[i][j] = ModelEntity(mesh: box, materials: [material])
+                chessBoxes[i][j].name = "cb_"+String(i)+"_"+String(j)
                 cb.addChild(chessBoxes[i][j])
                 (x, _, z) = boardCoord(i: i, j: j, piece: .empty)
+                chessBoxes[i][j].components.set(collisionComp)
                 chessBoxes[i][j].setPosition([x, 0.0, z], relativeTo: cb)
                 chessBoxes[i][j].isEnabled = true
             }
@@ -803,7 +815,6 @@ extension ViewController {
         var modelComp: ModelComponent = (wpEntity.components[ModelComponent])!
         modelComp.materials[0] = white_material
         wpEntity.components.set(modelComp)
-        wpEntity.components.set(collisionComp)
         
         for i in 0...7 {
             wp[i] = wpEntity.clone(recursive: true)
@@ -817,7 +828,6 @@ extension ViewController {
         modelComp = (bpEntity.components[ModelComponent])!
         modelComp.materials[0] = black_material
         bpEntity.components.set(modelComp)
-        bpEntity.components.set(collisionComp)
         for i in 0...7 {
             bp[i] = bpEntity.clone(recursive: true)
             bp[i].name = "bp"+String(i)
@@ -833,7 +843,6 @@ extension ViewController {
         modelComp = (wk.components[ModelComponent])!
         modelComp.materials[0] = white_material
         wk.components.set(modelComp)
-        wk.components.set(collisionComp)
         (x, y, z) = boardCoord(i: 4, j: 7, piece:.king)
         wk.setPosition([x, y, z], relativeTo: cb)
         game.addChild(wk)
@@ -843,7 +852,7 @@ extension ViewController {
         modelComp = (bk.components[ModelComponent])!
         modelComp.materials[0] = black_material
         bk.components.set(modelComp)
-        bk.components.set(collisionComp)
+        //bk.components.set(collisionComp)
         (x, y, z) = boardCoord(i: 4, j: 0, piece:.king)
         bk.setPosition([x, y, z], relativeTo: cb)
         game.addChild(bk)
@@ -854,7 +863,7 @@ extension ViewController {
         modelComp = (wb0.components[ModelComponent])!
         modelComp.materials[0] = white_material
         wb0.components.set(modelComp)
-        wb0.components.set(collisionComp)
+        //wb0.components.set(collisionComp)
         (x, y, z) = boardCoord(i: 2, j: 7, piece:.bishop)
         wb0.setPosition([x, y, z], relativeTo: game)
         game.addChild(wb0)
@@ -865,7 +874,7 @@ extension ViewController {
         modelComp = (wb1.components[ModelComponent])!
         modelComp.materials[0] = white_material
         wb1.components.set(modelComp)
-        wb1.components.set(collisionComp)
+        //wb1.components.set(collisionComp)
         (x, y, z) = boardCoord(i: 5, j: 7, piece:.bishop)
         wb1.setPosition([x, y, z], relativeTo: game)
         game.addChild(wb1)
@@ -876,17 +885,15 @@ extension ViewController {
         
         modelComp.materials[0] = black_material
         bb0.components.set(modelComp)
-        bb0.components.set(collisionComp)
         (x, y, z) = boardCoord(i: 2, j: 0, piece:.bishop)
         bb0.setPosition([x, y, z], relativeTo: cb)
         game.addChild(bb0)
         
         let bb1: Entity = bishop.clone(recursive: true)
-        bb1.name = "bb0"
+        bb1.name = "bb1"
         modelComp = (bb1.components[ModelComponent])!
         modelComp.materials[0] = black_material
         bb1.components.set(modelComp)
-        bb1.components.set(collisionComp)
         (x, y, z) = boardCoord(i: 5, j: 0, piece:.bishop)
         bb1.setPosition([x, y, z], relativeTo: game)
         game.addChild(bb1)
@@ -898,7 +905,6 @@ extension ViewController {
         
         modelComp.materials[0] = white_material
         wr0.components.set(modelComp)
-        wr0.components.set(collisionComp)
         (x, y, z) = boardCoord(i: 0, j: 7, piece:.rook)
         wr0.setPosition([x, y, z], relativeTo: cb)
         game.addChild(wr0)
@@ -909,7 +915,6 @@ extension ViewController {
         modelComp = (wr1.components[ModelComponent])!
         modelComp.materials[0] = white_material
         wr1.components.set(modelComp)
-        wr1.components.set(collisionComp)
         (x, y, z) = boardCoord(i: 7, j: 7, piece:.rook)
         wr1.setPosition([x, y, z], relativeTo: cb)
         game.addChild(wr1)
@@ -919,7 +924,6 @@ extension ViewController {
         modelComp = (br0.components[ModelComponent])!
         modelComp.materials[0] = black_material
         br0.components.set(modelComp)
-        br0.components.set(collisionComp)
         (x, y, z) = boardCoord(i: 0, j: 0, piece:.rook)
         br0.setPosition([x, y, z], relativeTo: cb)
         game.addChild(br0)
@@ -929,7 +933,6 @@ extension ViewController {
         modelComp = (br1.components[ModelComponent])!
         modelComp.materials[0] = black_material
         br1.components.set(modelComp)
-        br1.components.set(collisionComp)
         (x, y, z) = boardCoord(i: 7, j: 0, piece:.rook)
         br1.setPosition([x, y, z], relativeTo: cb)
         game.addChild(br1)
@@ -941,7 +944,6 @@ extension ViewController {
         modelComp = (wq.components[ModelComponent])!
         modelComp.materials[0] = white_material
         wq.components.set(modelComp)
-        wq.components.set(collisionComp)
         (x, y, z) = boardCoord(i: 3, j: 7, piece:.queen)
         wq.setPosition([x, y, z], relativeTo: cb)
         game.addChild(wq)
@@ -951,18 +953,17 @@ extension ViewController {
         modelComp = (bq.components[ModelComponent])!
         modelComp.materials[0] = black_material
         bq.components.set(modelComp)
-        bq.components.set(collisionComp)
         (x, y, z) = boardCoord(i: 3, j: 0, piece:.queen)
         bq.setPosition([x, y, z], relativeTo: cb)
         game.addChild(bq)
         
         let knight: Entity = pieces.findEntity(named: "Cylinder_Cylinder_005")!
+        knight.name = "knight"
         let wn0: Entity = knight.clone(recursive: true)
         wn0.name = "wn0"
         modelComp = (wn0.components[ModelComponent])!
         modelComp.materials[0] = white_material
         wn0.components.set(modelComp)
-        wn0.components.set(collisionComp)
         (x, y, z) = boardCoord(i: 1, j: 7, piece:.knight)
         wn0.setPosition([x, y, z], relativeTo: cb)
         game.addChild(wn0)
@@ -972,7 +973,6 @@ extension ViewController {
         modelComp = (wn1.components[ModelComponent])!
         modelComp.materials[0] = white_material
         wn1.components.set(modelComp)
-        wn1.components.set(collisionComp)
         (x, y, z) = boardCoord(i: 6, j: 7, piece:.knight)
         wn1.setPosition([x, y, z], relativeTo: cb)
         game.addChild(wn1)
@@ -983,7 +983,6 @@ extension ViewController {
         
         modelComp.materials[0] = black_material
         bn0.components.set(modelComp)
-        bn0.components.set(collisionComp)
         (x, y, z) = boardCoord(i: 1, j: 0, piece:.knight)
         bn0.setPosition([x, y, z], relativeTo: cb)
         game.addChild(bn0)
@@ -993,15 +992,157 @@ extension ViewController {
         modelComp = (bn1.components[ModelComponent])!
         modelComp.materials[0] = black_material
         bn1.components.set(modelComp)
-        bn1.components.set(collisionComp)
+        //bn1.components.set(collisionComp)
         (x, y, z) = boardCoord(i: 6, j: 0, piece:.knight)
         bn1.setPosition([x, y, z], relativeTo: cb)
         game.addChild(bn1)
-        
+
         setupOverlay()
         setupBoard()
+        placedBoard = true
         
     }
+    
+    func resetBoard() {
+        var piece: Entity
+        var name: String
+        var x: Float!
+        var y: Float!
+        var z: Float!
+        if(!placedBoard) {return}
+        setupBoard()
+        removeOverlay()
+        let cb: Entity=game.findEntity(named:"cb")!
+        for i in 0...7 {
+            name = "wp"+String(i)
+            piece = game.findEntity(named: name)!
+            (x, y, z) = boardCoord(i: i, j: 6, piece:.pawn)
+            piece.setPosition([x, y, z], relativeTo: cb)
+            piece.isEnabled=true
+        }
+
+        for i in 0...7 {
+            name = "bp"+String(i)
+            piece = game.findEntity(named: name)!
+            (x, y, z) = boardCoord(i: i, j: 1, piece:.pawn)
+            piece.setPosition([x, y, z], relativeTo: cb)
+            piece.isEnabled = true
+        }
+        
+        
+        name = "wk"
+        piece = game.findEntity(named: name)!
+        (x, y, z) = boardCoord(i: 4, j: 7, piece:.king)
+        piece.setPosition([x, y, z], relativeTo: cb)
+        piece.isEnabled = true
+        
+        name = "bk"
+        piece = game.findEntity(named: name)!
+        (x, y, z) = boardCoord(i: 4, j: 0, piece:.king)
+        piece.setPosition([x, y, z], relativeTo: cb)
+        piece.isEnabled = true
+
+
+        name = "wb0"
+        piece = game.findEntity(named: name)!
+        (x, y, z) = boardCoord(i: 2, j: 7, piece:.bishop)
+        piece.setPosition([x, y, z], relativeTo: game)
+        piece.isEnabled = true
+        
+
+        name = "wb1"
+        piece = game.findEntity(named: name)!
+        (x, y, z) = boardCoord(i: 5, j: 7, piece:.bishop)
+        piece.setPosition([x, y, z], relativeTo: game)
+        piece.isEnabled = true
+
+        name = "bb0"
+        piece = game.findEntity(named: name)!
+        (x, y, z) = boardCoord(i: 2, j: 0, piece:.bishop)
+        piece.setPosition([x, y, z], relativeTo: cb)
+        piece.isEnabled = true
+        
+
+        name = "bb1"
+        piece = game.findEntity(named: name)!
+        (x, y, z) = boardCoord(i: 5, j: 0, piece:.bishop)
+        piece.setPosition([x, y, z], relativeTo: game)
+        piece.isEnabled = true
+        
+
+        name = "wr0"
+        piece = game.findEntity(named: name)!
+        (x, y, z) = boardCoord(i: 0, j: 7, piece:.rook)
+        piece.setPosition([x, y, z], relativeTo: cb)
+        piece.isEnabled = true
+        
+
+        name = "wr1"
+        piece = game.findEntity(named: name)!
+        (x, y, z) = boardCoord(i: 7, j: 7, piece:.rook)
+        piece.setPosition([x, y, z], relativeTo: cb)
+        piece.isEnabled = true
+        
+
+        name = "br0"
+        piece = game.findEntity(named: name)!
+        (x, y, z) = boardCoord(i: 0, j: 0, piece:.rook)
+        piece.setPosition([x, y, z], relativeTo: cb)
+        piece.isEnabled = true
+        
+
+        name = "br1"
+        piece = game.findEntity(named: name)!
+        (x, y, z) = boardCoord(i: 7, j: 0, piece:.rook)
+        piece.setPosition([x, y, z], relativeTo: cb)
+        piece.isEnabled = true
+        
+        
+
+        name = "wq"
+        piece = game.findEntity(named: name)!
+        (x, y, z) = boardCoord(i: 3, j: 7, piece:.queen)
+        piece.setPosition([x, y, z], relativeTo: cb)
+        piece.isEnabled = true
+        
+
+        name = "bq"
+        piece = game.findEntity(named: name)!
+        (x, y, z) = boardCoord(i: 3, j: 0, piece:.queen)
+        piece.setPosition([x, y, z], relativeTo: cb)
+        piece.isEnabled = true
+        
+
+        name = "wn0"
+        piece = game.findEntity(named: name)!
+        (x, y, z) = boardCoord(i: 1, j: 7, piece:.knight)
+        piece.setPosition([x, y, z], relativeTo: cb)
+        piece.isEnabled = true
+        
+
+        name = "wn1"
+        piece = game.findEntity(named: name)!
+        (x, y, z) = boardCoord(i: 6, j: 7, piece:.knight)
+        piece.setPosition([x, y, z], relativeTo: cb)
+        piece.isEnabled = true
+        
+        name = "bn0"
+        piece = game.findEntity(named: name)!
+        (x, y, z) = boardCoord(i: 1, j: 0, piece:.knight)
+        piece.setPosition([x, y, z], relativeTo: cb)
+        piece.isEnabled = true
+        
+
+        name = "bn1"
+        piece = game.findEntity(named: name)!
+        (x, y, z) = boardCoord(i: 6, j: 0, piece:.knight)
+        piece.setPosition([x, y, z], relativeTo: cb)
+        piece.isEnabled = true
+
+        
+    }
+      
+      
     
     func get_fen(arr: [[String]]) -> String {
         var fen: String = ""
@@ -1036,5 +1177,52 @@ extension ViewController {
             fen = fen + fen_row
         }
         return fen
+    }
+    
+    func interpretCommand(str: String) {
+        var sx: Int!
+        var sy: Int!
+        var tx: Int!
+        var ty: Int!
+        var start = str.index(str.startIndex, offsetBy: 0)
+        var end = str.index(str.startIndex, offsetBy: 4)
+        var range = start..<end
+        let command = str[range]
+        switch command {
+        case "move":
+            start = str.index(str.startIndex, offsetBy: 5)
+            end = str.index(str.startIndex, offsetBy: 6)
+            range = start..<end
+            sx = Int(str[range])!
+            start = str.index(str.startIndex, offsetBy: 7)
+            end = str.index(str.startIndex, offsetBy: 8)
+            range = start..<end
+            sy = Int(str[range])!
+            start = str.index(str.startIndex, offsetBy: 9)
+            end = str.index(str.startIndex, offsetBy: 10)
+            range = start..<end
+            tx = Int(str[range])!
+            start = str.index(str.startIndex, offsetBy: 11)
+            end = str.index(str.startIndex, offsetBy: 12)
+            range = start..<end
+            ty = Int(str[range])!
+            movePiece(sx: sx, sy: sy, tx: tx, ty: ty)
+        case "show":
+            var i:Int = 5
+            while(i < str.count) {
+                start = str.index(str.startIndex, offsetBy: i)
+                end = str.index(str.startIndex, offsetBy: i+1)
+                range = start..<end
+                sx = Int(str[range])!
+                start = str.index(str.startIndex, offsetBy: i+2)
+                end = str.index(str.startIndex, offsetBy: i+3)
+                range = start..<end
+                sy = Int(str[range])!
+                displayCell(x: sx, y: sy)
+                i = i + 4
+            }
+        default:
+            _=0
+        }
     }
 }

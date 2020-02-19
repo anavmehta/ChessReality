@@ -192,15 +192,7 @@ EngineController *SharedEngineController;
     }
 }
 
-- (void)setDepth:(int)depth {
-    if(_isAnalyzing) {
-        self.isAnalyzing = NO;
-        _depth = depth;
-        self.isAnalyzing = YES;
-    } else {
-        _depth = depth;
-    }
-}
+
 
 - (void)setIsAnalyzing:(BOOL)isAnalyzing {
     if (_isAnalyzing != isAnalyzing) {
@@ -208,7 +200,6 @@ EngineController *SharedEngineController;
         if (isAnalyzing) {
             [self setOption:@"MultiPV" value:[NSString stringWithFormat:@"%lu", (unsigned long)_numberOfPrincipalVariations]];
             [self setOption:@"ponder" value:[NSString stringWithFormat:@"%s", "false"]];
-            //[self sendCommand:@"go depth 16"];
             [self sendCommand:_gameFen];
             [self sendCommand:@"go infinite"];
             [self commitCommands];

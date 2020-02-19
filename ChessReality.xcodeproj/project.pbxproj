@@ -16,7 +16,7 @@
 		BA5A751823F1BCD000D1C43A /* ViewController+Chessgame.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5A751723F1BCD000D1C43A /* ViewController+Chessgame.swift */; };
 		BA5A751B23F1BDAF00D1C43A /* ViewController+ChessEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5A751A23F1BDAF00D1C43A /* ViewController+ChessEngine.swift */; };
 		BA90582923CFCF690080257D /* MultipeerSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA90582823CFCF690080257D /* MultipeerSession.swift */; };
-		BAEAEFC323F9943300410C01 /* chess_pieces.usdz in Resources */ = {isa = PBXBuildFile; fileRef = BAEAEFC123F9943200410C01 /* chess_pieces.usdz */; };
+		BAB7DA1123FBA9C4002CF645 /* chess_pieces.usdz in Resources */ = {isa = PBXBuildFile; fileRef = BAEAEFC123F9943200410C01 /* chess_pieces.usdz */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,12 +89,12 @@
 		38A496F2229F8FA500C02FD0 /* ChessReality */ = {
 			isa = PBXGroup;
 			children = (
-				BAEAEFC123F9943200410C01 /* chess_pieces.usdz */,
 				BA90582823CFCF690080257D /* MultipeerSession.swift */,
 				38A496F3229F8FA500C02FD0 /* AppDelegate.swift */,
 				38D860A622A2F74A004E7E74 /* ViewController+ARAnchorPlacement.swift */,
 				38A496F5229F8FA500C02FD0 /* ViewController.swift */,
 				38A496FC229F8FA600C02FD0 /* Assets.xcassets */,
+				BAEAEFC123F9943200410C01 /* chess_pieces.usdz */,
 				38A496FE229F8FA600C02FD0 /* LaunchScreen.storyboard */,
 				38A49701229F8FA600C02FD0 /* Info.plist */,
 				BA5A751723F1BCD000D1C43A /* ViewController+Chessgame.swift */,
@@ -187,8 +187,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BAB7DA1123FBA9C4002CF645 /* chess_pieces.usdz in Resources */,
 				38A49700229F8FA600C02FD0 /* LaunchScreen.storyboard in Resources */,
-				BAEAEFC323F9943300410C01 /* chess_pieces.usdz in Resources */,
 				38A496FD229F8FA600C02FD0 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

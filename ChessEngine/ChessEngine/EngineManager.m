@@ -50,12 +50,7 @@
     }
 }
 
-- (void)setDepth:(int)depth {
-    if(_depth != depth) {
-        _depth = depth;
-        _engineController.depth = depth;
-    }
-}
+
 
 - (BOOL)isAnalyzing {
     return _engineController.isAnalyzing;

@@ -28,10 +28,6 @@ extern EngineController *SharedEngineController;
 
 @property (assign, nonatomic) id<EngineControllerDelegate> delegate;
 @property (strong, nonatomic) NSString *gameFen;
-/**
- Max depth of chess game
- */
-@property (assign, nonatomic) int depth;
 
 /**
  Number of principle variations. Default value is 1, and the value should not less than 1.

@@ -18,18 +18,17 @@ extension ViewController {
         gameFen="position fen "+fenStr+" "+curColor+" "+castling+" -"
         print(gameFen)
         startAnalysis()
+        repeat{
+            RunLoop.main.run(mode: .default, before: Date(timeIntervalSinceNow: 0.5))
+        } while (finishedAnalyzing == false)
         removeOverlay()
         displayMove()
         if(curColor == "w"){curColor = "b"}
         else {curColor = "w"}
         if(curColor == "b") {
             banner.text = "Black to play "
-            banner.backgroundColor = .white
-            banner.textColor = .black
         } else {
             banner.text = "White to play"
-            banner.backgroundColor = .black
-            banner.textColor = .white
         }
         computerPlays = false
     }
@@ -37,21 +36,16 @@ extension ViewController {
     func setupChessEngine() {
         engineManager.delegate = self
         engineManager.gameFen = gameFen
-        engineManager.depth = 5
     }
 
     func startAnalysis() {
         finishedAnalyzing = false
         engineManager.gameFen = gameFen
         engineManager.startAnalyzing()
-        let time = DispatchTime.now() + DispatchTimeInterval.milliseconds(25)
+        let time = DispatchTime.now() + DispatchTimeInterval.seconds(1)
         DispatchQueue.global().asyncAfter(deadline: time, execute: {
                 self.engineManager.stopAnalyzing()
         })
-        repeat{
-            RunLoop.main.run(mode: .default, before: Date(timeIntervalSinceNow: 0.5))
-        } while (finishedAnalyzing == false)
-
     }
     
     public func engineManager(_ engineManager: EngineManager, didReceivePrincipalVariation pv: String) {

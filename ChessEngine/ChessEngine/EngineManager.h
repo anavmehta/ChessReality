@@ -78,10 +78,6 @@
  */
 @property (strong, nonatomic, nullable) NSString *gameFen;
 
-/**
- Max depth of chess game
- */
-@property (assign, nonatomic) int depth;
 
 
 /**
