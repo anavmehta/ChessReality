@@ -28,14 +28,12 @@ extension ViewController: ARSessionDelegate {
     
     public func session(_ session: ARSession, didAdd anchors: [ARAnchor]) {
         for anchor in anchors {
-            if let participantAnchor = anchor as? ARParticipantAnchor {
+            if let _ = anchor as? ARParticipantAnchor {
                 sessionInfoLabel.text="Established joint experience with a peer."
                 connectedWithPeer = true
+                peerIdLabel.text = "\(String(describing: multipeerSession.clientPeerID))"
+                connectionStatusLabel.backgroundColor = .green
                 banner.text="Move around and tap on screen to place chessboard"
-                let anchorEntity = AnchorEntity(anchor: participantAnchor)
-                let coloredSphere = ModelEntity(mesh: MeshResource.generateSphere(radius: 0.01), materials: [SimpleMaterial(color: .brown, isMetallic: true)])
-                anchorEntity.addChild(coloredSphere)
-                arView.scene.addAnchor(anchorEntity)
             } else if anchor.name == "Base" {
                 sessionInfoLabel.text="Added plane anchor"
                 let anchorEntity = AnchorEntity(anchor: anchor)
@@ -97,6 +95,10 @@ extension ViewController: ARSessionDelegate {
         case .normal where allowMultipeerPlay && !multipeerSession.connectedPeers.isEmpty && mapProvider == nil:
             let peerNames = multipeerSession.connectedPeers.map({ $0.displayName }).joined(separator: ", ")
             message = "Connected with \(peerNames)."
+            connectedWithPeer = true
+            peerIdLabel.text = "\(String(describing: multipeerSession.clientPeerID))"
+            connectionStatusLabel.backgroundColor = .green
+            banner.text="Move around and tap on screen to place chessboard"
             
         case .notAvailable:
             message = "Tracking unavailable."

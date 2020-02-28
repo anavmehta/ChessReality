@@ -80,6 +80,18 @@ extension ViewController {
         return("")
     }
     
+    func string2int(s:String) -> Int {
+        if(s == "a") {return(0)}
+        else if(s == "b") {return(1)}
+        else if(s == "c") {return(2)}
+        else if(s == "d") {return(3)}
+        else if(s == "e") {return(4)}
+        else if(s == "f") {return(5)}
+        else if(s == "g") {return(6)}
+        else if(s == "h") {return(7)}
+        return(0)
+    }
+    
     func isOppositeColor(x: Int,y: Int,color:Color) -> Bool {
         let str : String = position[x][y]
         let start = str.index(str.startIndex, offsetBy: 0)
@@ -612,7 +624,8 @@ extension ViewController {
         let srow: Int = Int(tmpArry[1].unicodeScalars.map{$0.value}[0]-"1".unicodeScalars.map{$0.value}[0])
         let ecol: Int = Int(tmpArry[2].unicodeScalars.map{$0.value}[0]-"a".unicodeScalars.map{$0.value}[0])
         let erow: Int = Int(tmpArry[3].unicodeScalars.map{$0.value}[0]-"1".unicodeScalars.map{$0.value}[0])
-        return (srow, scol, erow, ecol)
+        //return (srow, scol, erow, ecol)
+        return (scol, 7-srow, ecol, 7-erow)
     }
     
     func updateBoard(sx: Int, sy: Int, tx: Int, ty: Int) {
@@ -643,11 +656,10 @@ extension ViewController {
         else if(piece == .rook) {s = s + "R"}
         else if(piece == .bishop) {s = s + "B"}
         if(epiece != "") {s = s + "x"}
-        if(piece != .pawn) {s = s + int2string(s:scol)}
-        //s = s + String(erow)
-        let c:String! = int2string(s: ecol)
-        s = s + c + String(erow+1) + " "
-        recordBanner.text = recordBanner.text + s
+        if(piece != .pawn) {s = s + int2string(s:srow)}
+        let c:String! = int2string(s: erow)
+        s = s + c + String(8-ecol) + " "
+        recordString = recordString + s
     }
     
   
@@ -711,7 +723,7 @@ extension ViewController {
         var y: Float!
         var z: Float!
         let collisionComp = CollisionComponent(
-            shapes: [.generateBox(size: [0.05,0.001,0.05])],
+            shapes: [.generateBox(size: [0.055,0.001,0.055])],
             mode: .trigger,
             filter: .sensor
         )
@@ -733,9 +745,6 @@ extension ViewController {
         black_material.metallic = MaterialScalarParameter(floatLiteral: 0.0)
         let red_material = SimpleMaterial(color: .red, isMetallic: false)
         game = Entity()
-        //game.synchronization = SynchronizationComponent()
-        //game.components.set(SynchronizationComponent())
-        //game.synchronization?.ownershipTransferMode = .au
         game.name = "game"
         game.synchronization = nil
         
@@ -1150,11 +1159,12 @@ extension ViewController {
         var prev_blanks: Int = 0
         var sq: String
         
-        for row in (0...7).reversed() {
+        //for row in (0...7).reversed() {
+        for row in 0...7 {
             fen_row = ""
             prev_blanks = 0
             for col in 0...7 {
-                sq = arr[row][col]
+                sq = arr[col][row]
                 if (sq == "empty" || sq == "" || sq == " ") {
                     prev_blanks = prev_blanks+1
                     if(col == 7) {
@@ -1173,10 +1183,45 @@ extension ViewController {
                     }
                 }
             }
-            if(7 > row) {fen_row = "/" + fen_row}
+            if(7 > row) {fen_row = fen_row + "/"}
             fen = fen + fen_row
         }
         return fen
+    }
+    
+    func move(sx: Int, sy: Int, tx: Int, ty: Int) -> Bool{
+        
+        if(position[sx][sy] == "") {return (false)}
+        let moves = validMoves(x: sx, y: sy)
+        if (moves.count == 0) {
+            return (false)
+        }
+        removeOverlay()
+        displayValidMoves(x: sx, y: sy)
+        if(!isValidMove(coord: (tx, ty), coords: moves)) {
+            return (false)
+        }
+        movePiece(sx: sx, sy: sy, tx: tx, ty: ty)
+        return(true)
+    }
+    
+    func move(str: String, color: Color) {
+        var start = str.index(str.startIndex, offsetBy: 0)
+        var end = str.index(str.startIndex, offsetBy: 1)
+        var range = start..<end
+        let piece = str[range]
+        start = str.index(str.startIndex, offsetBy: 1)
+        end = str.index(str.startIndex, offsetBy: 2)
+        range = start..<end
+        /*
+        let row_a:String = str[range]
+        let row: Int = string2int(s:row_a)
+        start = str.index(str.startIndex, offsetBy: 1)
+        end = str.index(str.startIndex, offsetBy: 2)
+        range = start..<end
+        let col = Int(str[range])
+        //let spiece:String = position[row][col]*/
+        
     }
     
     func interpretCommand(str: String) {
@@ -1207,6 +1252,7 @@ extension ViewController {
             range = start..<end
             ty = Int(str[range])!
             movePiece(sx: sx, sy: sy, tx: tx, ty: ty)
+            //inputStatusLabel.backgroundColor = .green
         case "show":
             var i:Int = 5
             while(i < str.count) {

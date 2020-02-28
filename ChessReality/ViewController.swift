@@ -14,7 +14,6 @@ import ChessEngine
 
 
 
-
 public class ViewController: UIViewController, EngineManagerDelegate {
     let engineManager: EngineManager = EngineManager()
     var messageLabel: UILabel!
@@ -26,10 +25,10 @@ public class ViewController: UIViewController, EngineManagerDelegate {
     //@IBOutlet var arView: ARView!
     public var arView: ARView!
     var banner:UILabel! = UILabel()
-    var recordBanner:UITextView!
+    var recordBanner:UILabel!
     var fenBanner:UILabel!
     var sessionInfoLabel: UILabel! = UILabel()
-    let items = ["Single player", "Play with Computer", "Play with opponent"]
+    let items = ["Single device", "Play with Computer", "Play with opponent"]
     var customSC: UISegmentedControl!
     var peerSessionIDs = [MCPeerID: String]()
     
@@ -66,6 +65,11 @@ public class ViewController: UIViewController, EngineManagerDelegate {
     var connectedWithPeer: Bool = false
     var placedBoard: Bool = false
     var owner: Bool = false
+    var recordString: String = ""
+    var myIdLabel: UILabel! = UILabel()
+    var peerIdLabel: UILabel! = UILabel()
+    var connectionStatusLabel: UILabel! = UILabel()
+    var inputStatusLabel: UILabel! = UILabel()
     
     
     func setupGestures() {
@@ -76,15 +80,6 @@ public class ViewController: UIViewController, EngineManagerDelegate {
     
     
     func setupMultipeerSession() {
-        /*
-         sessionIDObservation = observe(\.arView.session.identifier, options: [.new]) { object, change in
-         print("SessionID changed to: \(change.newValue!)")
-         // Tell all other peers about your ARSession's changed ID, so
-         // that they can keep track of which ARAnchors are yours.
-         guard let multipeerSession = self.multipeerSession else { return }
-         self.sendARSessionIDTo(peers: multipeerSession.connectedPeers)
-         
-         }*/
         if(self.multipeerSession != nil) {
             self.sendARSessionIDTo(peers: multipeerSession.connectedPeers)
         }
@@ -103,6 +98,16 @@ public class ViewController: UIViewController, EngineManagerDelegate {
         // Dispose of any resources that can be recreated.
     }
     
+    func setMode(mode:PlayingMode) {
+        allowComputerPlay = false
+        allowMultipeerPlay = false
+        if(mode == .Computer) {allowComputerPlay = true}
+        else if(mode == .MultiDevice) {allowMultipeerPlay = true}
+    }
+    func play() {
+        restartGame()
+    }
+    
     func restartGame() {
         resetBoard()
         curColor = "w"
@@ -110,99 +115,19 @@ public class ViewController: UIViewController, EngineManagerDelegate {
             setupMultipeerSession()
             banner.text = "Wait for participants to join"
         }
-        if(allowComputerPlay) {setupChessEngine()}
-        sessionInfoLabel.text = "Restarted game"
-    }
-    @objc func changePref(_ sender: UISegmentedControl) {
-        switch sender.selectedSegmentIndex {
-        case 1:
-            allowComputerPlay = true
-            allowMultipeerPlay = false
-            restartGame()
-        case 2:
-            allowMultipeerPlay = true
-            allowComputerPlay = false
-            restartGame()
-        default:
-            allowMultipeerPlay = false
-            allowComputerPlay = false
-            restartGame()
+        if(allowComputerPlay) {
+            banner.text = "White to move- tap a piece to select"
+            setupChessEngine()
         }
-    }
-    
-    
-    
-    
-    
-    
-    func setupViews() {
-        //let font=UIFont.boldSystemFont(ofSize: 10)
-        let defaultFont = "TimesNewRomanPSMT"
-        
-        let font=UIFont(name: defaultFont, size: 10)
-        customSC = UISegmentedControl(items: self.items)
-        customSC.setTitleTextAttributes([NSAttributedString.Key.font: font!], for: .normal)
-        customSC.selectedSegmentIndex = 0
-        // Style the Segmented Control
-        customSC.layer.cornerRadius = 5.0  // Don't let background bleed
-        customSC.backgroundColor = .black
-        customSC.tintColor = .white
-        self.view.addSubview(customSC)
-        
-        // Add target action method
-        customSC.addTarget(self, action: #selector(self.changePref(_:)), for: .valueChanged)
-        customSC.translatesAutoresizingMaskIntoConstraints = false
-        customSC.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        customSC.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 1.0).isActive = true
-        customSC.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.075).isActive = true
-        customSC.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
-        customSC.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 0).isActive = true
-        
-        banner.font = font
-        banner.textAlignment = .center
-        banner.backgroundColor = .white
-        banner.textColor = .black
-        banner.text = "Move around and tap on screen to place chessboard"
-        self.view.addSubview(banner)
-        
-        banner.translatesAutoresizingMaskIntoConstraints = false
-        banner.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        banner.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 1.0).isActive = true
-        banner.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.05).isActive = true
-        banner.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
-        banner.topAnchor.constraint(equalTo: self.customSC.bottomAnchor, constant: 0).isActive = true
-        
-        sessionInfoLabel.font = font
-        sessionInfoLabel.textAlignment = .center
-        sessionInfoLabel.backgroundColor = .black
-        sessionInfoLabel.textColor = .white
-        self.view.addSubview(sessionInfoLabel)
-        
-        sessionInfoLabel.translatesAutoresizingMaskIntoConstraints = false
-        sessionInfoLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        sessionInfoLabel.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 1.0).isActive = true
-        sessionInfoLabel.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.05).isActive = true
-        sessionInfoLabel.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
-        sessionInfoLabel.topAnchor.constraint(equalTo: self.banner.bottomAnchor, constant: 0).isActive = true
-        
-        
-        
-        
-        recordBanner = UITextView()
-        recordBanner.font = font
-        recordBanner.textAlignment = .left
-        recordBanner.backgroundColor = .white
-        recordBanner.textColor = .black
+        sessionInfoLabel.text = "Restarted game"
+        fenBanner.text = ""
         recordBanner.text = ""
-        self.view.addSubview(recordBanner)
         
-        recordBanner.translatesAutoresizingMaskIntoConstraints = false
-        recordBanner.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        recordBanner.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 1.0).isActive = true
-        recordBanner.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.1).isActive = true
-        recordBanner.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
-        recordBanner.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 25).isActive = true
     }
+    
+    
+    
+    
     
     func setupAll () {
         setupViews()
@@ -223,14 +148,16 @@ public class ViewController: UIViewController, EngineManagerDelegate {
     }
     
     override public func viewDidAppear(_ animated: Bool) {
-        
         super.viewDidAppear(animated)
         setupAll()
-        
     }
     
-    //override public func viewDidAppear(_ animated: Bool) {
-    //super.viewDidAppear(animated)
+    override public var prefersStatusBarHidden: Bool {
+        get {
+            return true
+        }
+    }
+    
     override public func viewDidLoad() {
         super.viewDidLoad()
         arView = ARView.init(frame: self.view.frame, cameraMode: .ar, automaticallyConfigureSession: true)
@@ -244,8 +171,27 @@ public class ViewController: UIViewController, EngineManagerDelegate {
         self.view = view
     }
     
-    
-    
+    func tap(x: Int, y: Int) {
+        if(selectedPiece == nil) {
+            if(position[x][y] == "") {return}
+            selectedPiece = game.findEntity(named: position[x][y])
+            let moves = validMoves(x: x, y: y)
+            if (moves.count == 0) {
+                sessionInfoLabel.text = selectedPiece.name + " selected piece cannot be moved"
+                selectedPiece = nil
+                return
+            }
+            removeOverlay()
+            displayValidMoves(x: x, y: y)
+            startPosXY = (x, y)
+        } else {
+            if(!isValidMove(coord: (x, y), coords: moves)) {
+                return
+            }
+            endPosXY = (x, y)
+            movePiece(sx: startPosXY.0, sy: startPosXY.1, tx: endPosXY.0, ty: endPosXY.1)
+        }
+    }
     
     @objc func handleTap(_ sender: UITapGestureRecognizer? = nil) {
         
@@ -254,9 +200,6 @@ public class ViewController: UIViewController, EngineManagerDelegate {
         var col: Color = .black
         if(curColor == "w") {col = .white}
         if(computerPlays && allowComputerPlay) {return}
-        //if(selectedPiece == nil)  {removeOverlay()}
-        
-        // handling code
         guard let touchInView = sender?.location(in: self.arView) else {
             return
         }
@@ -271,35 +214,21 @@ public class ViewController: UIViewController, EngineManagerDelegate {
                     connectedWithPeer &&
                     (!multipeerSession.connectedPeers.isEmpty &&
                         (multipeerSession.clientPeerID != multipeerSession.myPeerID)))) {
-                    //setupChessBoard()
                     planeAnchor = ARAnchor(name: "Base", transform: result.worldTransform)
                     self.arView.session.add(anchor: self.planeAnchor)
                     banner.text = "White to move- tap a piece to select"
                     owner = true
                     
                     if(allowMultipeerPlay && !multipeerSession.connectedPeers.isEmpty) {
-                        guard let syncService = self.multipeerSession.syncService else {
-                            fatalError("could not create multipeerHelp.syncService")
-                        }
-                        if(syncService.giveOwnership(of: game, toPeer: multipeerSession.myPeerID)) {
-                            banner.text = banner.text! + " \(multipeerSession.myPeerID) to play"
-                        }
+                        peerIdLabel.text = "\(String(describing: multipeerSession.clientPeerID))"
+                        myIdLabel.backgroundColor = .green
+                        peerIdLabel.backgroundColor = .white
                     }
                 }
                 modelTapped = true
                 return
             }
             if(self.game == nil) {return}
-            if(allowMultipeerPlay && !multipeerSession.connectedPeers.isEmpty) {
-                guard let syncService = self.multipeerSession.syncService else {
-                    fatalError("could not create multipeerHelp.syncService")
-                }
-                if(syncService.owner(of: self.game) != nil) {
-                    sessionInfoLabel.text = "Wait for your turn"
-                    return
-                    
-                }
-            }
             guard let entities = self.arView?.entities(
                 at: touchInView
                 )  else {
@@ -357,7 +286,7 @@ public class ViewController: UIViewController, EngineManagerDelegate {
                 return
             }
             movePiece(sx: startPosXY.0, sy: startPosXY.1, tx: endPosXY.0, ty: endPosXY.1)
-
+            
             if(curColor == "w"){curColor = "b"}
             else {curColor = "w"}
             selectedPiece = nil
@@ -371,19 +300,29 @@ public class ViewController: UIViewController, EngineManagerDelegate {
             if(allowComputerPlay) {
                 computerPlays = true
                 banner.text = banner.text! + "(Computer)"
+                inputStatusLabel.backgroundColor = .red
                 computerMove()
+                inputStatusLabel.backgroundColor = .green
             } else if (!allowMultipeerPlay) {
                 banner.text = banner.text! + " tap of a piece to select"
                 
             } else {
+                if(self.owner) {curColor = "w"}
+                else {curColor = "b"}
                 if(!multipeerSession.connectedPeers.isEmpty) {
                     guard let myData = "move \(startPosXY.0),\(startPosXY.1) \(endPosXY.0),\(endPosXY.1)".data(using: .ascii) else {
                         return
                     }
                     multipeerSession.sendToAllPeers(myData)
+                    peerIdLabel.backgroundColor = .green
+                    myIdLabel.backgroundColor = .white
+                    //banner.text = banner.text! + " \(String(describing: multipeerSession.clientPeerID)) to play"
                     
                 }
+                inputStatusLabel.backgroundColor = .red
             }
+            recordBanner.text = recordString
+            fenBanner.text = "position fen "+get_fen(arr:position)+" "+curColor+" "+castling+" -"
             sessionInfoLabel.text = ""
         }
     }

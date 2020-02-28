@@ -11,6 +11,21 @@ import ChessEngine
 
 extension ViewController {
     
+    func analyze() -> (Int, Int, Int, Int) {
+        let fenStr = get_fen(arr:position)
+        gameFen="position fen "+fenStr+" "+curColor+" "+castling+" -"
+        print(gameFen)
+        startAnalysis()
+        repeat{
+            RunLoop.main.run(mode: .default, before: Date(timeIntervalSinceNow: 0.5))
+        } while (finishedAnalyzing == false)
+        removeOverlay()
+        let (sx, sy, tx, ty) = translateMove(move: bestMoveNext)
+        displayCell(x: sx, y: sy)
+        displayCell(x: tx, y: ty)
+        return(sx, sy, tx, ty)
+    }
+    
     func computerMove() {
         if(!computerPlays && allowComputerPlay) {return}
 

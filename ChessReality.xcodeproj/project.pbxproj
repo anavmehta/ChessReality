@@ -13,6 +13,9 @@
 		38A49700229F8FA600C02FD0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 38A496FE229F8FA600C02FD0 /* LaunchScreen.storyboard */; };
 		38D860A722A2F74A004E7E74 /* ViewController+ARAnchorPlacement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D860A622A2F74A004E7E74 /* ViewController+ARAnchorPlacement.swift */; };
 		BA1649CF23D9399E00643FC4 /* ChessEngine.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BA16496D23D932BE00643FC4 /* ChessEngine.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		BA3E26C423FE19EE00B7ADEC /* ViewController+UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA3E26C323FE19EE00B7ADEC /* ViewController+UIView.swift */; };
+		BA3E26DA23FF5A2C00B7ADEC /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA3E26D923FF5A2C00B7ADEC /* Common.swift */; };
+		BA3E26DC23FF5AC900B7ADEC /* ViewController+Playground.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA3E26DB23FF5AC900B7ADEC /* ViewController+Playground.swift */; };
 		BA5A751823F1BCD000D1C43A /* ViewController+Chessgame.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5A751723F1BCD000D1C43A /* ViewController+Chessgame.swift */; };
 		BA5A751B23F1BDAF00D1C43A /* ViewController+ChessEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5A751A23F1BDAF00D1C43A /* ViewController+ChessEngine.swift */; };
 		BA90582923CFCF690080257D /* MultipeerSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA90582823CFCF690080257D /* MultipeerSession.swift */; };
@@ -52,6 +55,9 @@
 		38A49701229F8FA600C02FD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		38D860A622A2F74A004E7E74 /* ViewController+ARAnchorPlacement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+ARAnchorPlacement.swift"; sourceTree = "<group>"; };
 		BA16496823D932BE00643FC4 /* ChessEngine.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ChessEngine.xcodeproj; path = ChessEngine/ChessEngine.xcodeproj; sourceTree = "<group>"; };
+		BA3E26C323FE19EE00B7ADEC /* ViewController+UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+UIView.swift"; sourceTree = "<group>"; };
+		BA3E26D923FF5A2C00B7ADEC /* Common.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
+		BA3E26DB23FF5AC900B7ADEC /* ViewController+Playground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+Playground.swift"; sourceTree = "<group>"; };
 		BA5A751723F1BCD000D1C43A /* ViewController+Chessgame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+Chessgame.swift"; sourceTree = "<group>"; };
 		BA5A751A23F1BDAF00D1C43A /* ViewController+ChessEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+ChessEngine.swift"; sourceTree = "<group>"; };
 		BA90582823CFCF690080257D /* MultipeerSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipeerSession.swift; sourceTree = "<group>"; };
@@ -89,6 +95,7 @@
 		38A496F2229F8FA500C02FD0 /* ChessReality */ = {
 			isa = PBXGroup;
 			children = (
+				BA3E26D923FF5A2C00B7ADEC /* Common.swift */,
 				BA90582823CFCF690080257D /* MultipeerSession.swift */,
 				38A496F3229F8FA500C02FD0 /* AppDelegate.swift */,
 				38D860A622A2F74A004E7E74 /* ViewController+ARAnchorPlacement.swift */,
@@ -99,6 +106,8 @@
 				38A49701229F8FA600C02FD0 /* Info.plist */,
 				BA5A751723F1BCD000D1C43A /* ViewController+Chessgame.swift */,
 				BA5A751A23F1BDAF00D1C43A /* ViewController+ChessEngine.swift */,
+				BA3E26C323FE19EE00B7ADEC /* ViewController+UIView.swift */,
+				BA3E26DB23FF5AC900B7ADEC /* ViewController+Playground.swift */,
 			);
 			path = ChessReality;
 			sourceTree = "<group>";
@@ -200,12 +209,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BA3E26DA23FF5A2C00B7ADEC /* Common.swift in Sources */,
 				BA5A751823F1BCD000D1C43A /* ViewController+Chessgame.swift in Sources */,
 				BA5A751B23F1BDAF00D1C43A /* ViewController+ChessEngine.swift in Sources */,
 				BA90582923CFCF690080257D /* MultipeerSession.swift in Sources */,
 				38A496F6229F8FA500C02FD0 /* ViewController.swift in Sources */,
 				38A496F4229F8FA500C02FD0 /* AppDelegate.swift in Sources */,
+				BA3E26C423FE19EE00B7ADEC /* ViewController+UIView.swift in Sources */,
 				38D860A722A2F74A004E7E74 /* ViewController+ARAnchorPlacement.swift in Sources */,
+				BA3E26DC23FF5AC900B7ADEC /* ViewController+Playground.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
