@@ -4,7 +4,6 @@
 // Copyright (c) 2020 Anav Mehta. All rights reserved
 import Foundation
 import UIKit
-
 //import PlaygroundSupport
 
 
@@ -14,17 +13,19 @@ public enum PlayingMode {
     case MultiDevice
 }
 
-
+let runLoop = CFRunLoopGetCurrent()
 
 struct PlayGroundVars {
-
+    
     public var hintSx: Int! = -1
     public var hintSy: Int! = -1
     public var hintTx: Int! = -1
     public var hintTy: Int! = -1
+    public var hintStr: String! = ""
     public var soundEnabled: Bool = true
     public var status: Int! = -1
     public var response: Bool = false
+    public var wait:Bool = true
 }
 var playGroundVars: PlayGroundVars = PlayGroundVars()
 
@@ -50,6 +51,13 @@ public class PlaygroundListener: PlaygroundRemoteLiveViewProxyDelegate {
                 playGroundVars.hintSy = Int(strArr[2])!
                 playGroundVars.hintTx = Int(strArr[3])!
                 playGroundVars.hintTy = Int(strArr[4])!
+                playGroundVars.hintStr = int2string(s:playGroundVars.hintSx)+String(playGroundVars.hintSy)+int2string(s:playGroundVars.hintTx)+String(playGroundVars.hintTy)
+            case "wait":
+                if(strArr[1] == "false") {
+                    playGroundVars.wait = false
+                } else {
+                    playGroundVars.wait = true
+                }
             default:
                 print("Not a recognized command")
             }
@@ -62,7 +70,33 @@ public class PlaygroundListener: PlaygroundRemoteLiveViewProxyDelegate {
         PlaygroundPage.current.finishExecution()
     }
 }
+ */
 
+func int2string(s:Int) -> String {
+    if(s == 0) {return("a")}
+    else if(s == 1) {return("b")}
+    else if(s == 2) {return("c")}
+    else if(s == 3) {return("d")}
+    else if(s == 4) {return("e")}
+    else if(s == 5) {return("f")}
+    else if(s == 6) {return("g")}
+    else if(s == 7) {return("h")}
+    return("")
+}
+
+func string2int(s:String) -> Int {
+    if(s == "a") {return(0)}
+    else if(s == "b") {return(1)}
+    else if(s == "c") {return(2)}
+    else if(s == "d") {return(3)}
+    else if(s == "e") {return(4)}
+    else if(s == "f") {return(5)}
+    else if(s == "g") {return(6)}
+    else if(s == "h") {return(7)}
+    return(0)
+}
+
+/*
 public func sound(enabled: Bool) {
     proxy?.send(.string("sound "+String(enabled)))
 }
@@ -78,21 +112,32 @@ func mode2str(mode: PlayingMode) -> String {
     else {return ""}
 }
 
+func str2mode(str: String) -> PlayingMode {
+    if(str == "single") {return .SingleDevice}
+    else if(str == "computer") {return .Computer}
+    else if(str == "multi") {return .MultiDevice}
+    else {return .SingleDevice}
+}
+
 public func setMode(mode: PlayingMode) {
     let str=mode2str(mode: mode)
     proxy?.send(.string("mode "+String(str)))
+}
+
+public func wait() {
+    CFRunLoopRun()
 }
 
 public func play() {
     proxy?.send(.string("play"))
 }
 
-public func tap(x: Int, y: Int) {
-    proxy?.send(.string("tap "+String(x)+" "+String(y)))
+public func tap(str: String) {
+    proxy?.send(.string("tap "+String(str)))
 }
 
-public func move(sx: Int, sy: Int, tx: Int, ty: Int) {
-    proxy?.send(.string("move "+String(sx)+" "+String(sy)+" "+String(tx)+" "+String(ty)))
+public func move(str: String) {
+    proxy?.send(.string("move "+String(str)))
 }
 
 public func analyze() {

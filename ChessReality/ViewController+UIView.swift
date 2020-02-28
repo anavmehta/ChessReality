@@ -28,11 +28,21 @@ extension ViewController {
             restartGame()
         }
     }
+    
+    @objc public func hinted(sender: UIButton!) {
+        if(finishedAnalyzing == false) {return}
+        if(!planeAnchorAdded) {return}
+         hintButton.setTitleColor(UIColor.red, for: .normal)
+        let (_,_,_,_) = self.analyze()
+        hintButton.setTitleColor(UIColor.green, for: .normal)
+    }
     func setupViews() {
+        alertController.addAction(OKAction)
         //let font=UIFont.boldSystemFont(ofSize: 10)
         let defaultFont = "TimesNewRomanPSMT"
         
         var font=UIFont(name: defaultFont, size: 12)
+        
         customSC = UISegmentedControl(items: self.items)
         customSC.setTitleTextAttributes([NSAttributedString.Key.font: font!], for: .normal)
         customSC.selectedSegmentIndex = 0
@@ -46,11 +56,13 @@ extension ViewController {
         customSC.translatesAutoresizingMaskIntoConstraints = false
         customSC.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         customSC.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 1.0).isActive = true
-        customSC.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.05).isActive = true
+        customSC.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.04).isActive = true
         customSC.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         customSC.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 0).isActive = true
         
-        font=UIFont(name: defaultFont, size: 12)
+        
+        
+        sessionInfoLabel = UILabel()
         sessionInfoLabel.font = font
         sessionInfoLabel.textAlignment = .center
         sessionInfoLabel.backgroundColor = .black
@@ -61,113 +73,94 @@ extension ViewController {
         self.view.addSubview(sessionInfoLabel)
         
         sessionInfoLabel.translatesAutoresizingMaskIntoConstraints = false
-        sessionInfoLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = false
-        sessionInfoLabel.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.75).isActive = true
-        sessionInfoLabel.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.025).isActive = true
-        sessionInfoLabel.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
+        sessionInfoLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        sessionInfoLabel.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 1.0).isActive = true
+        sessionInfoLabel.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.02).isActive = true
         sessionInfoLabel.topAnchor.constraint(equalTo: self.customSC.bottomAnchor, constant: 0).isActive = true
         
-        font=UIFont(name: defaultFont, size: 8)
-        myIdLabel.font = font
-        myIdLabel.textAlignment = .center
-        myIdLabel.backgroundColor = .black
-        myIdLabel.textColor = .white
-        myIdLabel.lineBreakMode = .byWordWrapping
-        myIdLabel.text = UIDevice.current.name
-        // allows the UILabel to display an unlimited number of lines
-        myIdLabel.numberOfLines = 0;
-        self.view.addSubview(myIdLabel)
-        
-        myIdLabel.translatesAutoresizingMaskIntoConstraints = false
-        myIdLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = false
-        myIdLabel.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.25).isActive = true
-        myIdLabel.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.0125).isActive = true
-        myIdLabel.leadingAnchor.constraint(equalTo: self.sessionInfoLabel.trailingAnchor).isActive = true
-        myIdLabel.topAnchor.constraint(equalTo: self.customSC.bottomAnchor, constant: 0).isActive = true
-        
-        peerIdLabel.font = font
-        peerIdLabel.textAlignment = .center
-        peerIdLabel.backgroundColor = .black
-        peerIdLabel.textColor = .white
-        peerIdLabel.lineBreakMode = .byWordWrapping
-        peerIdLabel.text = ""
-        // allows the UILabel to display an unlimited number of lines
-        peerIdLabel.numberOfLines = 0;
-        self.view.addSubview(peerIdLabel)
-        
-        peerIdLabel.translatesAutoresizingMaskIntoConstraints = false
-        peerIdLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = false
-        peerIdLabel.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.25).isActive = true
-        peerIdLabel.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.0125).isActive = true
-        peerIdLabel.leadingAnchor.constraint(equalTo: self.sessionInfoLabel.trailingAnchor).isActive = true
-        peerIdLabel.topAnchor.constraint(equalTo: self.myIdLabel.bottomAnchor, constant: 0).isActive = true
-        
-        font=UIFont(name: defaultFont, size: 12)
+        banner = UILabel()
         banner.font = font
         banner.textAlignment = .center
         banner.backgroundColor = .black
         banner.textColor = .white
         banner.lineBreakMode = .byWordWrapping
-        banner.text = "Move around and tap on screen to place chessboard"
+        // allows the UILabel to display an unlimited number of lines
+        banner.numberOfLines = 0;
         self.view.addSubview(banner)
         
         banner.translatesAutoresizingMaskIntoConstraints = false
-        //banner.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        banner.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.875).isActive = true
-        banner.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.025).isActive = true
-        banner.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
+        banner.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        banner.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 1.0).isActive = true
+        banner.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.02).isActive = true
         banner.topAnchor.constraint(equalTo: self.sessionInfoLabel.bottomAnchor, constant: 0).isActive = true
         
-
-        inputStatusLabel.font = font
-        inputStatusLabel.textAlignment = .center
-        inputStatusLabel.backgroundColor = .green
-        inputStatusLabel.textColor = .white
-        inputStatusLabel.lineBreakMode = .byWordWrapping
-        inputStatusLabel.text = ""
-        self.view.addSubview(inputStatusLabel)
         
-        inputStatusLabel.translatesAutoresizingMaskIntoConstraints = false
+        font=UIFont(name: defaultFont, size: 8)
+        idLabel.font = font
+        idLabel.textAlignment = .center
+        idLabel.backgroundColor = .red
+        idLabel.textColor = .black
+        idLabel.lineBreakMode = .byWordWrapping
+        idLabel.text = UIDevice.current.name
+        idLabel.numberOfLines = 0;
+        self.view.addSubview(idLabel)
+        
+        idLabel.translatesAutoresizingMaskIntoConstraints = false
+        idLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = false
+        idLabel.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.125).isActive = true
+        idLabel.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.015).isActive = true
+        idLabel.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
+        idLabel.topAnchor.constraint(equalTo: self.banner.bottomAnchor, constant: 0).isActive = true
+        
+        
+        
+        peerIdLabel.font = font
+        peerIdLabel.textAlignment = .center
+        //peerIdLabel.backgroundColor = .red
+        peerIdLabel.textColor = .black
+        peerIdLabel.lineBreakMode = .byWordWrapping
+        peerIdLabel.text = ""
+        self.view.addSubview(peerIdLabel)
+        
+        peerIdLabel.translatesAutoresizingMaskIntoConstraints = false
         //banner.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        inputStatusLabel.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.0625).isActive = true
-        inputStatusLabel.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.025).isActive = true
-        inputStatusLabel.leadingAnchor.constraint(equalTo: self.banner.trailingAnchor).isActive = true
-        inputStatusLabel.topAnchor.constraint(equalTo: self.peerIdLabel.bottomAnchor, constant: 0).isActive = true
+        peerIdLabel.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.125).isActive = true
+        peerIdLabel.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.015).isActive = true
+        peerIdLabel.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
+        peerIdLabel.topAnchor.constraint(equalTo: self.banner.bottomAnchor, constant: 0).isActive = true
         
-        connectionStatusLabel.font = font
-        connectionStatusLabel.textAlignment = .center
-        connectionStatusLabel.backgroundColor = .red
-        connectionStatusLabel.textColor = .white
-        connectionStatusLabel.lineBreakMode = .byWordWrapping
-        connectionStatusLabel.text = ""
-        self.view.addSubview(connectionStatusLabel)
         
-        connectionStatusLabel.translatesAutoresizingMaskIntoConstraints = false
-        //banner.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        connectionStatusLabel.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.0625).isActive = true
-        connectionStatusLabel.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.025).isActive = true
-        connectionStatusLabel.leadingAnchor.constraint(equalTo: self.inputStatusLabel.trailingAnchor).isActive = true
-        connectionStatusLabel.topAnchor.constraint(equalTo: self.peerIdLabel.bottomAnchor, constant: 0).isActive = true
-
+        
         font=UIFont(name: defaultFont, size: 10)
-        fenBanner = UILabel()
+        
+        hintButton.setTitle("?", for: .normal)
+        hintButton.setTitleColor(UIColor.green, for: .normal)
+        hintButton.addTarget(self, action: #selector(hinted(sender:)), for: .touchUpInside)
+        self.view.addSubview(hintButton)
+        hintButton.translatesAutoresizingMaskIntoConstraints = false
+        hintButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = false
+
+        hintButton.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.03).isActive = true
+        hintButton.widthAnchor.constraint(equalTo: self.hintButton.heightAnchor, multiplier: 1.0).isActive = true
+        hintButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        hintButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
+        
         fenBanner.font = font
         fenBanner.textAlignment = .left
         fenBanner.backgroundColor = .black
         fenBanner.textColor = .white
-        fenBanner.text = ""
         fenBanner.lineBreakMode = .byWordWrapping
+        fenBanner.text = ""
         self.view.addSubview(fenBanner)
         
         fenBanner.translatesAutoresizingMaskIntoConstraints = false
-        fenBanner.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        fenBanner.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 1.0).isActive = true
-        fenBanner.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.025).isActive = true
+        fenBanner.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = false
+        fenBanner.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.01).isActive = true
+        fenBanner.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        fenBanner.trailingAnchor.constraint(equalTo: self.hintButton.leadingAnchor).isActive = true
         fenBanner.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
-        fenBanner.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 0).isActive = true
         
         
-        recordBanner = UILabel()
         recordBanner.font = font
         recordBanner.textAlignment = .left
         recordBanner.backgroundColor = .black
@@ -177,13 +170,13 @@ extension ViewController {
         self.view.addSubview(recordBanner)
         
         recordBanner.translatesAutoresizingMaskIntoConstraints = false
-        recordBanner.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        recordBanner.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 1.0).isActive = true
-        recordBanner.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.05).isActive = true
+        recordBanner.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = false
+        recordBanner.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.02).isActive = true
+        recordBanner.bottomAnchor.constraint(equalTo: self.fenBanner.topAnchor).isActive = true
+        recordBanner.trailingAnchor.constraint(equalTo: self.hintButton.leadingAnchor).isActive = true
         recordBanner.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
-        recordBanner.bottomAnchor.constraint(equalTo: self.fenBanner.topAnchor, constant: 0).isActive = true
-        
         
 
+        
     }
 }

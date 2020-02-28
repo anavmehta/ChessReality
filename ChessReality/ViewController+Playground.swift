@@ -7,11 +7,13 @@
 //
 
 import Foundation
-
 /*
- 
 import PlaygroundSupport
+
 extension ViewController : PlaygroundLiveViewMessageHandler {
+    public func liveViewMessageConnectionOpened() {}
+    
+    public func liveViewMessageConnectionClosed() {}
     
     public func receive(_ message: PlaygroundValue) {
         var sx: Int! = -1
@@ -25,24 +27,21 @@ extension ViewController : PlaygroundLiveViewMessageHandler {
             switch strArr[0] {
             case "play":
                 play()
-                _ = 0
             case "analyze":
-                (sx!,sy!,tx!,ty!) = analyze()
+                //(sx!,sy!,tx!,ty!) = analyze()
                 self.send(.string("analyze " + String(sx!) + " " + String(sy!) + " " + String(tx!) + " " + String(ty!)))
             case "sound":
                 if(strArr[1] == "true") {sound(enabled: true)}
                 else {sound(enabled: false)}
-                _ = 0
             case "animation":
                 if(strArr[1] == "true") {animation(enabled: true)}
                 else {animation(enabled: false)}
             case "move":
-                if(strArr.size() > 2) {
-                    move(sx: Int(strArr[1])!, sy: Int(strArr[2])!, tx: Int(strArr[3])!, ty: Int(strArr[4])!
-                } else {move(str: strArr[1]!)}
+                self.move(str: String(strArr[1]))
             case "tap":
-                tap(x: Int(strArr[1])!-1, y: Int(strArr[2])!-1)
-
+                self.tap(str: String(strArr[1]))
+            case "setMode":
+                self.setMode(mode: str2mode(str: String(strArr[1])))
             default:
                 print("Not a recognized command")
             }

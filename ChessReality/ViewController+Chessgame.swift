@@ -68,29 +68,7 @@ extension ViewController {
         
     }
     
-    func int2string(s:Int) -> String {
-        if(s == 0) {return("a")}
-        else if(s == 1) {return("b")}
-        else if(s == 2) {return("c")}
-        else if(s == 3) {return("d")}
-        else if(s == 4) {return("e")}
-        else if(s == 5) {return("f")}
-        else if(s == 6) {return("g")}
-        else if(s == 7) {return("h")}
-        return("")
-    }
-    
-    func string2int(s:String) -> Int {
-        if(s == "a") {return(0)}
-        else if(s == "b") {return(1)}
-        else if(s == "c") {return(2)}
-        else if(s == "d") {return(3)}
-        else if(s == "e") {return(4)}
-        else if(s == "f") {return(5)}
-        else if(s == "g") {return(6)}
-        else if(s == "h") {return(7)}
-        return(0)
-    }
+
     
     func isOppositeColor(x: Int,y: Int,color:Color) -> Bool {
         let str : String = position[x][y]
@@ -1189,6 +1167,41 @@ extension ViewController {
         return fen
     }
     
+    
+    func tap(str: String) {
+        var start = str.index(str.startIndex, offsetBy: 0)
+        var end = str.index(str.startIndex, offsetBy: 1)
+        var range = start..<end
+        var val:String = String(str[range])
+        let x = string2int(s: val)
+        start = str.index(str.startIndex, offsetBy: 1)
+        end = str.index(str.startIndex, offsetBy: 2)
+        range = start..<end
+        val = String(str[range])
+        let y = 7-Int(val)!
+
+        if(selectedPiece == nil) {
+            if(position[x][y] == "") {return}
+            selectedPiece = game.findEntity(named: position[x][y])
+            let moves = validMoves(x: x, y: y)
+            if (moves.count == 0) {
+                alertController.message = selectedPiece.name + " selected piece cannot be moved"
+                self.present(alertController, animated: true, completion: nil)
+                selectedPiece = nil
+                return
+            }
+            removeOverlay()
+            displayValidMoves(x: x, y: y)
+            startPosXY = (x, y)
+        } else {
+            if(!isValidMove(coord: (x, y), coords: moves)) {
+                return
+            }
+            endPosXY = (x, y)
+            movePiece(sx: startPosXY.0, sy: startPosXY.1, tx: endPosXY.0, ty: endPosXY.1)
+        }
+    }
+    
     func move(sx: Int, sy: Int, tx: Int, ty: Int) -> Bool{
         
         if(position[sx][sy] == "") {return (false)}
@@ -1205,22 +1218,43 @@ extension ViewController {
         return(true)
     }
     
-    func move(str: String, color: Color) {
+    func move(str: String) -> Bool {
         var start = str.index(str.startIndex, offsetBy: 0)
         var end = str.index(str.startIndex, offsetBy: 1)
         var range = start..<end
-        let piece = str[range]
+        var val:String = String(str[range])
+        let sx:Int = string2int(s: val)
         start = str.index(str.startIndex, offsetBy: 1)
         end = str.index(str.startIndex, offsetBy: 2)
         range = start..<end
-        /*
-        let row_a:String = str[range]
-        let row: Int = string2int(s:row_a)
-        start = str.index(str.startIndex, offsetBy: 1)
-        end = str.index(str.startIndex, offsetBy: 2)
+        val = String(str[range])
+        let sy:Int = 8-Int(val)!
+        
+        start = str.index(str.startIndex, offsetBy: 2)
+        end = str.index(str.startIndex, offsetBy: 3)
         range = start..<end
-        let col = Int(str[range])
-        //let spiece:String = position[row][col]*/
+        val = String(str[range])
+        let tx:Int = string2int(s: val)
+        
+        start = str.index(str.startIndex, offsetBy: 3)
+        end = str.index(str.startIndex, offsetBy: 4)
+        range = start..<end
+        val = String(str[range])
+        let ty:Int = 7-Int(val)!
+
+        if(position[sx][sy] == "") {return (false)}
+        let moves = validMoves(x: sx, y: sy)
+        if (moves.count == 0) {
+            return (false)
+        }
+        removeOverlay()
+        displayValidMoves(x: sx, y: sy)
+        if(!isValidMove(coord: (tx, ty), coords: moves)) {
+            return (false)
+        }
+        movePiece(sx: sx, sy: sy, tx: tx, ty: ty)
+        return(true)
+
         
     }
     
@@ -1252,7 +1286,8 @@ extension ViewController {
             range = start..<end
             ty = Int(str[range])!
             movePiece(sx: sx, sy: sy, tx: tx, ty: ty)
-            //inputStatusLabel.backgroundColor = .green
+
+
         case "show":
             var i:Int = 5
             while(i < str.count) {

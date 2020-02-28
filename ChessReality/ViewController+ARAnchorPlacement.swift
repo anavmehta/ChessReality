@@ -30,25 +30,30 @@ extension ViewController: ARSessionDelegate {
         for anchor in anchors {
             if let _ = anchor as? ARParticipantAnchor {
                 sessionInfoLabel.text="Established joint experience with a peer."
-                connectedWithPeer = true
-                peerIdLabel.text = "\(String(describing: multipeerSession.clientPeerID))"
-                connectionStatusLabel.backgroundColor = .green
                 banner.text="Move around and tap on screen to place chessboard"
+                connectedWithPeer = true
+                peerIdLabel.text = id(str: "\(String(describing: multipeerSession.clientPeerID))")
+                peerIdLabel.backgroundColor = .green
+                idLabel.backgroundColor = .green
+                
             } else if anchor.name == "Base" {
                 sessionInfoLabel.text="Added plane anchor"
+                if(self.owner) {banner.text = "You are white - your turn to play"}
+                else {banner.text = "You are black"}
                 let anchorEntity = AnchorEntity(anchor: anchor)
                 planeAnchorAdded = true
                 if(self.game != nil) {anchorEntity.addChild(self.game)}
                 curColor = "b"
                 if(self.owner) {curColor = "w"}
                 arView.scene.addAnchor(anchorEntity)
+                idLabel.backgroundColor = .green
             }
             
         }
     }
     
     public func session(_ session: ARSession, didUpdate frame: ARFrame) {
-
+        
         updateSessionInfoLabel(for: frame, trackingState: frame.camera.trackingState)
     }
     
@@ -96,9 +101,10 @@ extension ViewController: ARSessionDelegate {
             let peerNames = multipeerSession.connectedPeers.map({ $0.displayName }).joined(separator: ", ")
             message = "Connected with \(peerNames)."
             connectedWithPeer = true
+            idLabel.backgroundColor = .green
             peerIdLabel.text = "\(String(describing: multipeerSession.clientPeerID))"
-            connectionStatusLabel.backgroundColor = .green
-            banner.text="Move around and tap on screen to place chessboard"
+            peerIdLabel.backgroundColor = .green
+            
             
         case .notAvailable:
             message = "Tracking unavailable."
@@ -120,20 +126,18 @@ extension ViewController: ARSessionDelegate {
             message = "Initializing AR session."
             
         default:
-            // No feedback needed when tracking is normal and planes are visible.
-            // (Nor when in unreachable limited-tracking states.)
-            _=0
-            //message = ""
+            message = ""
         }
         sessionInfoLabel.text = message
     }
     
     public func session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
         updateSessionInfoLabel(for: session.currentFrame!, trackingState: camera.trackingState)
-    } 
+    }
     
     /// Begins the coaching process that instructs the user's movement during
     /// ARKit's session initialization.
+    
     func presentCoachingOverlay() {
         coachingOverlay.session = arView.session
         coachingOverlay.delegate = self
@@ -155,6 +159,7 @@ extension ViewController: ARSessionDelegate {
         }
         let str = String(data: data, encoding: .ascii) ?? "Data is not an ASCII string"
         interpretCommand(str:str)
+        peerToPlay = false
     }
     
     
@@ -170,6 +175,6 @@ extension ViewController: ARSessionDelegate {
         // Reset tracking and/or remove existing anchors if consistent tracking is required.
         sessionInfoLabel.text = "Session interruption ended"
     }
-
+    
 }
 

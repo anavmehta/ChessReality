@@ -12,13 +12,16 @@ import ChessEngine
 extension ViewController {
     
     func analyze() -> (Int, Int, Int, Int) {
+        setupChessEngine()
         let fenStr = get_fen(arr:position)
         gameFen="position fen "+fenStr+" "+curColor+" "+castling+" -"
         print(gameFen)
         startAnalysis()
-        repeat{
-            RunLoop.main.run(mode: .default, before: Date(timeIntervalSinceNow: 0.5))
-        } while (finishedAnalyzing == false)
+        CFRunLoopRun()
+        
+        //repeat{
+        //    RunLoop.main.run(mode: .default, before: Date(timeIntervalSinceNow: 0.5))
+        //} while (finishedAnalyzing == false)
         removeOverlay()
         let (sx, sy, tx, ty) = translateMove(move: bestMoveNext)
         displayCell(x: sx, y: sy)
@@ -33,9 +36,11 @@ extension ViewController {
         gameFen="position fen "+fenStr+" "+curColor+" "+castling+" -"
         print(gameFen)
         startAnalysis()
+        CFRunLoopRun()
+        /*
         repeat{
             RunLoop.main.run(mode: .default, before: Date(timeIntervalSinceNow: 0.5))
-        } while (finishedAnalyzing == false)
+        } while (finishedAnalyzing == false) */
         removeOverlay()
         displayMove()
         if(curColor == "w"){curColor = "b"}
