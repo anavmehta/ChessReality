@@ -19,6 +19,9 @@
 		BA5A751823F1BCD000D1C43A /* ViewController+Chessgame.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5A751723F1BCD000D1C43A /* ViewController+Chessgame.swift */; };
 		BA5A751B23F1BDAF00D1C43A /* ViewController+ChessEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5A751A23F1BDAF00D1C43A /* ViewController+ChessEngine.swift */; };
 		BA90582923CFCF690080257D /* MultipeerSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA90582823CFCF690080257D /* MultipeerSession.swift */; };
+		BA90E594240ACA2B0058C987 /* mallert 008.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BA90E591240ACA2B0058C987 /* mallert 008.mp3 */; };
+		BA90E595240ACA2B0058C987 /* crowd.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BA90E593240ACA2B0058C987 /* crowd.mp3 */; };
+		BA90E597240ACB120058C987 /* wrong.wav in Resources */ = {isa = PBXBuildFile; fileRef = BA90E596240ACB120058C987 /* wrong.wav */; };
 		BAB7DA1123FBA9C4002CF645 /* chess_pieces.usdz in Resources */ = {isa = PBXBuildFile; fileRef = BAEAEFC123F9943200410C01 /* chess_pieces.usdz */; };
 /* End PBXBuildFile section */
 
@@ -61,6 +64,9 @@
 		BA5A751723F1BCD000D1C43A /* ViewController+Chessgame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+Chessgame.swift"; sourceTree = "<group>"; };
 		BA5A751A23F1BDAF00D1C43A /* ViewController+ChessEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+ChessEngine.swift"; sourceTree = "<group>"; };
 		BA90582823CFCF690080257D /* MultipeerSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipeerSession.swift; sourceTree = "<group>"; };
+		BA90E591240ACA2B0058C987 /* mallert 008.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "mallert 008.mp3"; sourceTree = "<group>"; };
+		BA90E593240ACA2B0058C987 /* crowd.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = crowd.mp3; sourceTree = "<group>"; };
+		BA90E596240ACB120058C987 /* wrong.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = wrong.wav; sourceTree = "<group>"; };
 		BAEAEFC123F9943200410C01 /* chess_pieces.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = chess_pieces.usdz; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -95,6 +101,9 @@
 		38A496F2229F8FA500C02FD0 /* ChessReality */ = {
 			isa = PBXGroup;
 			children = (
+				BA90E596240ACB120058C987 /* wrong.wav */,
+				BA90E593240ACA2B0058C987 /* crowd.mp3 */,
+				BA90E591240ACA2B0058C987 /* mallert 008.mp3 */,
 				BA3E26D923FF5A2C00B7ADEC /* Common.swift */,
 				BA90582823CFCF690080257D /* MultipeerSession.swift */,
 				38A496F3229F8FA500C02FD0 /* AppDelegate.swift */,
@@ -196,8 +205,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BA90E595240ACA2B0058C987 /* crowd.mp3 in Resources */,
 				BAB7DA1123FBA9C4002CF645 /* chess_pieces.usdz in Resources */,
 				38A49700229F8FA600C02FD0 /* LaunchScreen.storyboard in Resources */,
+				BA90E594240ACA2B0058C987 /* mallert 008.mp3 in Resources */,
+				BA90E597240ACB120058C987 /* wrong.wav in Resources */,
 				38A496FD229F8FA600C02FD0 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

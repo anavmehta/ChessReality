@@ -68,6 +68,20 @@ extension ViewController {
         
     }
     
+    func pieceType(str: String) -> String {
+        let start = str.index(str.startIndex, offsetBy: 1)
+        let end = str.index(str.startIndex, offsetBy: 2)
+        let range = start..<end
+        let subStr = str[range]
+        if(subStr == "q") {return "queen"}
+        else if(subStr == "k") {return "king"}
+        else if(subStr == "p") {return "pawn"}
+        else if(subStr == "b") {return "bishop"}
+        else if(subStr == "n") {return "knight"}
+        else if(subStr == "r") {return "rook"}
+        else {return ""}
+    }
+    
 
     
     func isOppositeColor(x: Int,y: Int,color:Color) -> Bool {
@@ -613,7 +627,8 @@ extension ViewController {
             let entity: Entity! = arView.scene.findEntity(named: position[tx][ty])
             //entity.removeFromParent()
             entity.isEnabled = false
-        }
+            playSound(sound: 2)
+        } else {playSound(sound: 1)}
         position[tx][ty] = pieceName
     }
     
@@ -645,9 +660,8 @@ extension ViewController {
         
         let cb: Entity! = game.findEntity(named: "cb")
         let box = MeshResource.generateBox(size: [0.05,0.01,0.05]) // Generate mesh
-        //var material = SimpleMaterial(color: .green, isMetallic: true)
         var material = SimpleMaterial()
-        material.baseColor = MaterialColorParameter.color(.init(red: 0.0,
+        material.baseColor = MaterialColorParameter.color(.init(red: 1.0,
                                                                 green: 1.0,
                                                                 blue: 0.0,
                                                                 alpha: 0.8))
@@ -721,6 +735,15 @@ extension ViewController {
                                                                       alpha: 1.0))
         black_material.roughness = MaterialScalarParameter(floatLiteral: 0.0)
         black_material.metallic = MaterialScalarParameter(floatLiteral: 0.0)
+        
+        var green_material = SimpleMaterial()
+        green_material.baseColor = MaterialColorParameter.color(.init(red: 0.0,
+                                                                      green: 0.5,
+                                                                      blue: 0.0,
+                                                                      alpha: 1.0))
+        green_material.roughness = MaterialScalarParameter(floatLiteral: 0.0)
+        green_material.metallic = MaterialScalarParameter(floatLiteral: 0.0)
+        
         let red_material = SimpleMaterial(color: .red, isMetallic: false)
         game = Entity()
         game.name = "game"
@@ -786,7 +809,7 @@ extension ViewController {
         for i in 0...7 {
             for j in 0...7 {
                 if((i+j) % 2 == 0) {material = white_material}
-                else {material = black_material}
+                else {material = green_material}
                 chessBoxes[i][j] = ModelEntity(mesh: box, materials: [material])
                 chessBoxes[i][j].name = "cb_"+String(i)+"_"+String(j)
                 cb.addChild(chessBoxes[i][j])

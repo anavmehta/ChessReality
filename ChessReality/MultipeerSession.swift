@@ -1,9 +1,9 @@
 /*
-See LICENSE folder for this sample’s licensing information.
-
-Abstract:
-A simple abstraction of the MultipeerConnectivity API as used in this app.
-*/
+ See LICENSE folder for this sample’s licensing information.
+ 
+ Abstract:
+ A simple abstraction of the MultipeerConnectivity API as used in this app.
+ */
 
 import RealityKit
 import MultipeerConnectivity
@@ -26,16 +26,16 @@ class MultipeerSession: NSObject {
     private let peerDiscoveredHandler: (MCPeerID) -> Bool
     
     public var syncService: MultipeerConnectivityService? {
-      if syncServiceRK == nil {
-        syncServiceRK = try? MultipeerConnectivityService(session: session)
-      }
-      return syncServiceRK
+        if syncServiceRK == nil {
+            syncServiceRK = try? MultipeerConnectivityService(session: session)
+        }
+        return syncServiceRK
     }
     /// - Tag: MultipeerSetup
     init(receivedDataHandler: @escaping (Data, MCPeerID) -> Void,
          peerJoinedHandler: @escaping (MCPeerID) -> Void,
-    peerLeftHandler: @escaping (MCPeerID) -> Void,
-    peerDiscoveredHandler: @escaping (MCPeerID) -> Bool ) {
+         peerLeftHandler: @escaping (MCPeerID) -> Void,
+         peerDiscoveredHandler: @escaping (MCPeerID) -> Bool ) {
         self.receivedDataHandler = receivedDataHandler
         self.peerJoinedHandler = peerJoinedHandler
         self.peerLeftHandler = peerLeftHandler
@@ -97,12 +97,10 @@ extension MultipeerSession: MCSessionDelegate {
     }
     
     public func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
-        //receivedStream?(stream, streamName, peerID)
         fatalError("This service does not send/receive streams.")
     }
     
     public func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {
-        //receivingResource?(resourceName, peerID, progress)
         fatalError("This service does not send/receive resources.")
     }
     
@@ -123,7 +121,7 @@ extension MultipeerSession: MCNearbyServiceBrowserDelegate {
             browser.invitePeer(peerID, to: session, withContext: nil, timeout: 10)
         }
     }
-
+    
     public func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
         // This app doesn't do anything with non-invited peers, so there's nothing to do here.
     }
@@ -136,8 +134,8 @@ extension MultipeerSession: MCNearbyServiceAdvertiserDelegate {
     func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
         // Call handler to accept invitation and join the session.
         clientPeerID = peerID
- 
+        
         invitationHandler(true, self.session)
     }
-
+    
 }

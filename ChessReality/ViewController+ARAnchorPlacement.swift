@@ -47,14 +47,47 @@ extension ViewController: ARSessionDelegate {
                 if(self.owner) {curColor = "w"}
                 arView.scene.addAnchor(anchorEntity)
                 idLabel.backgroundColor = .green
+                removeCoachingOverlay()
             }
             
         }
     }
     
     public func session(_ session: ARSession, didUpdate frame: ARFrame) {
-        
         updateSessionInfoLabel(for: frame, trackingState: frame.camera.trackingState)
+        /*
+         let screenCenter = CGPoint(x: arView.frame.midX, y: arView.frame.midY)
+         
+         let results = arView.hitTest(screenCenter, types: [.existingPlaneUsingExtent])
+         guard let result = results.first(where: { result -> Bool in
+         
+         // Ignore results that are too close or too far away to the camera when initially placing
+         guard result.distance > 0.25 && result.distance < 3.0 || self.coachingOverlay.isActive else {
+         return false
+         }
+         
+         // Make sure the anchor is a horizontal plane with a reasonable extent
+         guard let planeAnchor = result.anchor as? ARPlaneAnchor,
+         planeAnchor.alignment == .horizontal else {
+         return false
+         }
+         
+         // Make sure the horizontal plane has a reasonable extent
+         let extent = simd_length(planeAnchor.extent)
+         guard extent < 0.5  else {
+         return false
+         }
+         
+         return true
+         }),
+         let planeAnchor = result.anchor as? ARPlaneAnchor else {
+         return
+         }
+         self.planeAnchor = ARAnchor(name: "Base", transform: result.worldTransform)
+         self.arView.session.add(anchor: planeAnchor)
+         */
+        
+        
     }
     
     // MARK: - ARSessionDelegate
@@ -144,6 +177,13 @@ extension ViewController: ARSessionDelegate {
         coachingOverlay.goal = .horizontalPlane
         coachingOverlay.activatesAutomatically = false
         self.coachingOverlay.setActive(true, animated: true)
+    }
+    
+    func removeCoachingOverlay() {
+        // Remove the coaching overlay view
+        self.coachingOverlay.delegate = nil
+        self.coachingOverlay.setActive(false, animated: false)
+        self.coachingOverlay.removeFromSuperview()
     }
     
     /// - Tag: ReceiveData

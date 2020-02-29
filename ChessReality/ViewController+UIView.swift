@@ -40,6 +40,9 @@ extension ViewController {
         alertController.addAction(OKAction)
         //let font=UIFont.boldSystemFont(ofSize: 10)
         let defaultFont = "TimesNewRomanPSMT"
+        //coachingOverlay.frame = UIScreen.main.bounds
+        //self.view.addSubview(coachingOverlay)
+
         
         var font=UIFont(name: defaultFont, size: 12)
         
@@ -60,40 +63,48 @@ extension ViewController {
         customSC.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         customSC.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 0).isActive = true
         
+        font=UIFont(name: defaultFont, size: 12)
+        hintButton.setTitle("?", for: .normal)
+        hintButton.setTitleColor(UIColor.green, for: .normal)
+        hintButton.addTarget(self, action: #selector(hinted(sender:)), for: .touchUpInside)
+        self.view.addSubview(hintButton)
         
+        hintButton.translatesAutoresizingMaskIntoConstraints = false
+        hintButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = false
+        hintButton.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.04).isActive = true
+        hintButton.widthAnchor.constraint(equalTo: self.hintButton.heightAnchor).isActive = true
+        hintButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
+        hintButton.topAnchor.constraint(equalTo: self.customSC.bottomAnchor).isActive = true
         
-        sessionInfoLabel = UILabel()
         sessionInfoLabel.font = font
         sessionInfoLabel.textAlignment = .center
         sessionInfoLabel.backgroundColor = .black
         sessionInfoLabel.textColor = .white
-        sessionInfoLabel.lineBreakMode = .byWordWrapping
-        // allows the UILabel to display an unlimited number of lines
-        sessionInfoLabel.numberOfLines = 0;
+        //sessionInfoLabel.sizeToFit()
+        sessionInfoLabel.adjustsFontSizeToFitWidth = true
         self.view.addSubview(sessionInfoLabel)
         
         sessionInfoLabel.translatesAutoresizingMaskIntoConstraints = false
-        sessionInfoLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        sessionInfoLabel.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 1.0).isActive = true
+        sessionInfoLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = false
         sessionInfoLabel.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.02).isActive = true
-        sessionInfoLabel.topAnchor.constraint(equalTo: self.customSC.bottomAnchor, constant: 0).isActive = true
+        sessionInfoLabel.topAnchor.constraint(equalTo: self.customSC.bottomAnchor).isActive = true
+        sessionInfoLabel.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
+        sessionInfoLabel.trailingAnchor.constraint(equalTo: self.hintButton.leadingAnchor).isActive = true
         
-        banner = UILabel()
         banner.font = font
         banner.textAlignment = .center
         banner.backgroundColor = .black
         banner.textColor = .white
-        banner.lineBreakMode = .byWordWrapping
-        // allows the UILabel to display an unlimited number of lines
-        banner.numberOfLines = 0;
+        //banner.sizeToFit()
+        banner.adjustsFontSizeToFitWidth = true
         self.view.addSubview(banner)
         
         banner.translatesAutoresizingMaskIntoConstraints = false
-        banner.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        banner.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 1.0).isActive = true
+        banner.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = false
         banner.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.02).isActive = true
-        banner.topAnchor.constraint(equalTo: self.sessionInfoLabel.bottomAnchor, constant: 0).isActive = true
-        
+        banner.topAnchor.constraint(equalTo: self.sessionInfoLabel.bottomAnchor).isActive = true
+        banner.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
+        banner.trailingAnchor.constraint(equalTo: self.hintButton.leadingAnchor).isActive = true
         
         font=UIFont(name: defaultFont, size: 8)
         idLabel.font = font
@@ -102,15 +113,16 @@ extension ViewController {
         idLabel.textColor = .black
         idLabel.lineBreakMode = .byWordWrapping
         idLabel.text = UIDevice.current.name
+        idLabel.sizeToFit()
         idLabel.numberOfLines = 0;
         self.view.addSubview(idLabel)
         
         idLabel.translatesAutoresizingMaskIntoConstraints = false
         idLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = false
-        idLabel.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.125).isActive = true
+        idLabel.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.25).isActive = true
         idLabel.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.015).isActive = true
         idLabel.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
-        idLabel.topAnchor.constraint(equalTo: self.banner.bottomAnchor, constant: 0).isActive = true
+        idLabel.topAnchor.constraint(equalTo: self.banner.bottomAnchor).isActive = true
         
         
         
@@ -120,30 +132,18 @@ extension ViewController {
         peerIdLabel.textColor = .black
         peerIdLabel.lineBreakMode = .byWordWrapping
         peerIdLabel.text = ""
+        peerIdLabel.sizeToFit()
         self.view.addSubview(peerIdLabel)
         
         peerIdLabel.translatesAutoresizingMaskIntoConstraints = false
-        //banner.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        peerIdLabel.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.125).isActive = true
+        peerIdLabel.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.25).isActive = true
         peerIdLabel.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.015).isActive = true
         peerIdLabel.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
-        peerIdLabel.topAnchor.constraint(equalTo: self.banner.bottomAnchor, constant: 0).isActive = true
+        peerIdLabel.topAnchor.constraint(equalTo: self.banner.bottomAnchor).isActive = true
         
         
         
         font=UIFont(name: defaultFont, size: 10)
-        
-        hintButton.setTitle("?", for: .normal)
-        hintButton.setTitleColor(UIColor.green, for: .normal)
-        hintButton.addTarget(self, action: #selector(hinted(sender:)), for: .touchUpInside)
-        self.view.addSubview(hintButton)
-        hintButton.translatesAutoresizingMaskIntoConstraints = false
-        hintButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = false
-
-        hintButton.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.03).isActive = true
-        hintButton.widthAnchor.constraint(equalTo: self.hintButton.heightAnchor, multiplier: 1.0).isActive = true
-        hintButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
-        hintButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
         
         fenBanner.font = font
         fenBanner.textAlignment = .left
@@ -151,13 +151,14 @@ extension ViewController {
         fenBanner.textColor = .white
         fenBanner.lineBreakMode = .byWordWrapping
         fenBanner.text = ""
+        fenBanner.sizeToFit()
         self.view.addSubview(fenBanner)
         
         fenBanner.translatesAutoresizingMaskIntoConstraints = false
-        fenBanner.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = false
+        fenBanner.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         fenBanner.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.01).isActive = true
         fenBanner.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
-        fenBanner.trailingAnchor.constraint(equalTo: self.hintButton.leadingAnchor).isActive = true
+        //fenBanner.trailingAnchor.constraint(equalTo: self.hintButton.leadingAnchor).isActive = true
         fenBanner.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
         
         
@@ -167,13 +168,14 @@ extension ViewController {
         recordBanner.textColor = .white
         recordBanner.lineBreakMode = .byWordWrapping
         recordBanner.text = ""
+        recordBanner.sizeToFit()
         self.view.addSubview(recordBanner)
         
         recordBanner.translatesAutoresizingMaskIntoConstraints = false
-        recordBanner.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = false
+        recordBanner.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         recordBanner.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.02).isActive = true
         recordBanner.bottomAnchor.constraint(equalTo: self.fenBanner.topAnchor).isActive = true
-        recordBanner.trailingAnchor.constraint(equalTo: self.hintButton.leadingAnchor).isActive = true
+        //recordBanner.trailingAnchor.constraint(equalTo: self.hintButton.leadingAnchor).isActive = true
         recordBanner.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
         
 

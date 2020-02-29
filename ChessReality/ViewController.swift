@@ -10,12 +10,19 @@ import ARKit
 import RealityKit
 import Combine
 import MultipeerConnectivity
+import AVFoundation
 import ChessEngine
 
 
 
 public class ViewController: UIViewController, EngineManagerDelegate {
     let engineManager: EngineManager = EngineManager()
+    var audioPlayer: AVAudioPlayer!
+    public var soundEnabled: Bool = true
+    public var animationEnabled: Bool = true
+    let audioFilePathWrong = Bundle.main.path(forResource:"wrong", ofType: "wav")
+    let audioFilePathSafe = Bundle.main.path(forResource:"mallert 008", ofType: "mp3")
+    let audioFilePathWon = Bundle.main.path(forResource:"crowd", ofType: "mp3")
     var bestMoveNext: String! = ""
     var finishedAnalyzing: Bool = true {
         didSet {
@@ -69,7 +76,7 @@ public class ViewController: UIViewController, EngineManagerDelegate {
     let alertController = UIAlertController(title: "", message: "", preferredStyle: .alert)
     let OKAction = UIAlertAction(title: "OK", style: .default)
     var peerToPlay: Bool = false
-
+    
     var planeAnchorAdded: Bool = false {
         didSet {
             if(planeAnchorAdded == true) {
@@ -83,6 +90,40 @@ public class ViewController: UIViewController, EngineManagerDelegate {
     var recordString: String = ""
     var idLabel: UILabel! = UILabel()
     var peerIdLabel: UILabel! = UILabel()
+    
+    public func sound(enabled: Bool) {
+        soundEnabled = enabled
+    }
+    public func animation(enabled: Bool) {
+        animationEnabled = enabled
+    }
+    
+    func playSound(sound: Int) {
+        var audioFilePath: String!
+        if(!soundEnabled) {return}
+        if(sound == 0) {
+            audioFilePath = audioFilePathWrong
+        } else if(sound == 1) {
+            audioFilePath = audioFilePathSafe
+        } else if(sound == 2) {
+            audioFilePath = audioFilePathWon
+        }
+        if audioFilePath != nil {
+            
+            let audioFileUrl = NSURL.fileURL(withPath: audioFilePath!)
+            do {
+                audioPlayer = try AVAudioPlayer.init(contentsOf: audioFileUrl)
+                guard let audioPlayer = audioPlayer else { return }
+                audioPlayer.play()
+            }
+            catch let error {
+                print(error.localizedDescription)
+            }
+            
+        } else {
+            print("audio file is not found")
+        }
+    }
     
     
     func setupGestures() {
@@ -121,13 +162,13 @@ public class ViewController: UIViewController, EngineManagerDelegate {
         restartGame()
     }
     /*
-    func setupChessEngine() {
-        
-    }
-    
-    func computerMove() {
-        
-    } */
+     func setupChessEngine() {
+     
+     }
+     
+     func computerMove() {
+     
+     } */
     
     func restartGame() {
         resetBoard()
@@ -148,7 +189,7 @@ public class ViewController: UIViewController, EngineManagerDelegate {
     }
     
     
-
+    
     
     
     func setupAll () {
@@ -188,7 +229,7 @@ public class ViewController: UIViewController, EngineManagerDelegate {
         self.view = arView
         arView.session.delegate = self
     }
-
+    
     
     func id(str: String) -> String {
         let start = str.firstIndex(of: "=") ?? str.endIndex
@@ -199,12 +240,14 @@ public class ViewController: UIViewController, EngineManagerDelegate {
         if(allowMultipeerPlay && multipeerSession.connectedPeers.isEmpty) {return}
         if(!finishedAnalyzing) {
             alertController.message = "Wait for computer"
+            playSound(sound: 0)
             self.present(alertController, animated: true, completion: nil)
             return
         }
         if(allowMultipeerPlay && peerToPlay) {
             if(self.owner) {alertController.message = "Wait for black to play"}
             else {alertController.message = "Wait for white to play"}
+            playSound(sound: 0)
             self.present(alertController, animated: true, completion: nil)
             return
         }
@@ -234,7 +277,7 @@ public class ViewController: UIViewController, EngineManagerDelegate {
                     self.arView.session.add(anchor: self.planeAnchor)
                     banner.text = "White to move- tap a piece to select"
                     fenBanner.text = "position fen "+get_fen(arr:position)+" "+curColor+" "+castling+" -"
-
+                    
                     self.owner = true
                     
                     if(allowMultipeerPlay && !multipeerSession.connectedPeers.isEmpty) {
@@ -261,6 +304,15 @@ public class ViewController: UIViewController, EngineManagerDelegate {
                     && (entity2color(str:selectedPiece.name) == entity2color(str: entityName)))){
                     alertController.message = selectedPiece.name+" already selected"
                     self.present(alertController, animated: true, completion: nil)
+                    playSound(sound: 0)
+                    return
+                }
+                if(isPiece(entity:entity) && selectedPiece == nil && (entity2color(str: entityName) != col)) {
+                    if(curColor == "w") {alertController.message = "Whites turn to play"}
+                    else {alertController.message = "Blacks turn to play"}
+                    self.present(alertController, animated: true, completion: nil)
+                    playSound(sound: 0)
+                    selectedPiece = nil
                     return
                 }
                 if(isPiece(entity:entity) && selectedPiece == nil && (entity2color(str: entityName) == col)) {
@@ -269,8 +321,9 @@ public class ViewController: UIViewController, EngineManagerDelegate {
                     startPosXY = (xs, zs)
                     moves = validMoves(x: xs, y: zs)
                     if (moves.count == 0) {
-                        alertController.message = selectedPiece.name + " selected piece cannot be moved"
+                        alertController.message = pieceType(str:selectedPiece.name) + "  cannot be moved"
                         self.present(alertController, animated: true, completion: nil)
+                        playSound(sound: 0)
                         selectedPiece = nil
                         return
                     }
@@ -300,6 +353,7 @@ public class ViewController: UIViewController, EngineManagerDelegate {
                     alertController.message = "Select piece first"
                     if(curColor == "w") {alertController.message=alertController.message!+" (white to play)"}
                     else {alertController.message=alertController.message!+" (black to play)"}
+                    playSound(sound: 0)
                     self.present(alertController, animated: true, completion: nil)
                     return
                 }
@@ -312,7 +366,7 @@ public class ViewController: UIViewController, EngineManagerDelegate {
             }
             movePiece(sx: startPosXY.0, sy: startPosXY.1, tx: endPosXY.0, ty: endPosXY.1)
             
-
+            
             selectedPiece = nil
             selectedBoard = false
             moves=[]
@@ -337,7 +391,7 @@ public class ViewController: UIViewController, EngineManagerDelegate {
             } else {
                 if(self.owner) {curColor = "w"}
                 else {curColor = "b"}
-
+                
                 if(!multipeerSession.connectedPeers.isEmpty) {
                     if(self.owner) {banner.text = "You are white"}
                     else {banner.text = "You are black"}
