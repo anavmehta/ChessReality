@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import ARKit
 import RealityKit
 
 extension ViewController {
@@ -620,8 +619,21 @@ extension ViewController {
         return (scol, 7-srow, ecol, 7-erow)
     }
     
+    func animate(sx: Int, sy: Int, tx: Int, ty: Int) {
+        //if(animationEnabled && !allowMultipeerPlay) {
+        if(animationEnabled) {
+            let entity: Entity! = self.game.findEntity(named: position[sx][sy])
+            //let entity: Entity! = arView.scene.findEntity(named: position[sx][sy])
+            let (xt, yt, zt) = boardCoord(i: tx, j: ty, piece:entity2piece(str: position[sx][sy]))
+            var translationTransform = entity.transform
+            translationTransform.translation = SIMD3<Float>(x:xt,y:yt,z:zt)
+            entity.move(to: translationTransform, relativeTo: entity.parent, duration: 1, timingFunction: .easeInOut)
+        }
+    }
+    
     func updateBoard(sx: Int, sy: Int, tx: Int, ty: Int) {
         let pieceName: String = position[sx][sy]
+
         position[sx][sy] = ""
         if(position[tx][ty] != "") {
             let entity: Entity! = arView.scene.findEntity(named: position[tx][ty])
@@ -688,10 +700,17 @@ extension ViewController {
         }
     }
 
+    func setPiece(pieceName: String, tx: Int, ty: Int) {
+        let piece: Entity! = game.findEntity(named: pieceName)
+        let (x, y, z) = boardCoord(i: tx, j: ty, piece:entity2piece(str: pieceName))
+        piece.setPosition([x, y, z], relativeTo: game)
+    }
+    
     func movePiece(sx: Int, sy: Int, tx: Int, ty: Int){
         let pieceName = position[sx][sy]
         let piece: Entity! = arView.scene.findEntity(named: pieceName)
         let (x, y, z) = boardCoord(i: tx, j: ty, piece:entity2piece(str: pieceName))
+        animate(sx: sx, sy: sy, tx: tx, ty: ty)
         piece.setPosition([x, y, z], relativeTo: game)
         algebraicNotation(srow: sx, scol: sy, erow: tx, ecol: ty)
         updateBoard(sx: sx, sy: sy, tx: tx, ty: ty)
@@ -701,6 +720,7 @@ extension ViewController {
     func displayMove() {
 
         let (sx, sy, tx, ty) = translateMove(move: bestMoveNext)
+        //let (sx, sy, tx, ty) = (startPosXY.0, startPosXY.1, endPosXY.0, endPosXY.1)
         movePiece(sx: sx, sy: sy, tx: tx, ty: ty)
         bestMoveNext = ""
     }
@@ -1191,7 +1211,8 @@ extension ViewController {
     }
     
     
-    func tap(str: String) {
+    func tap(str: String) -> Bool{
+        if(!planeAnchorAdded) {return(false)}
         var start = str.index(str.startIndex, offsetBy: 0)
         var end = str.index(str.startIndex, offsetBy: 1)
         var range = start..<end
@@ -1201,28 +1222,30 @@ extension ViewController {
         end = str.index(str.startIndex, offsetBy: 2)
         range = start..<end
         val = String(str[range])
-        let y = 7-Int(val)!
+        let y = 8-Int(val)!
 
         if(selectedPiece == nil) {
-            if(position[x][y] == "") {return}
+            if(position[x][y] == "") {return(false)}
             selectedPiece = game.findEntity(named: position[x][y])
-            let moves = validMoves(x: x, y: y)
+            moves = validMoves(x: x, y: y)
             if (moves.count == 0) {
                 alertController.message = selectedPiece.name + " selected piece cannot be moved"
                 self.present(alertController, animated: true, completion: nil)
                 selectedPiece = nil
-                return
+                return(false)
             }
             removeOverlay()
             displayValidMoves(x: x, y: y)
             startPosXY = (x, y)
         } else {
             if(!isValidMove(coord: (x, y), coords: moves)) {
-                return
+                return(false)
             }
             endPosXY = (x, y)
             movePiece(sx: startPosXY.0, sy: startPosXY.1, tx: endPosXY.0, ty: endPosXY.1)
+            selectedPiece = nil
         }
+        return(true)
     }
     
     func move(sx: Int, sy: Int, tx: Int, ty: Int) -> Bool{
@@ -1242,6 +1265,7 @@ extension ViewController {
     }
     
     func move(str: String) -> Bool {
+        if(!planeAnchorAdded) {return(false)}
         var start = str.index(str.startIndex, offsetBy: 0)
         var end = str.index(str.startIndex, offsetBy: 1)
         var range = start..<end
@@ -1263,7 +1287,7 @@ extension ViewController {
         end = str.index(str.startIndex, offsetBy: 4)
         range = start..<end
         val = String(str[range])
-        let ty:Int = 7-Int(val)!
+        let ty:Int = 8-Int(val)!
 
         if(position[sx][sy] == "") {return (false)}
         let moves = validMoves(x: sx, y: sy)
@@ -1327,6 +1351,84 @@ extension ViewController {
             }
         default:
             _=0
+        }
+    }
+    
+    func clearBoard() {
+        var piece: Entity
+        for i in 0...7 {
+            for j in 0...7 {
+                if(position[i][j] != "") {
+                    piece = self.game.findEntity(named: position[i][j])!
+                    piece.isEnabled = false
+                }
+                position[i][j] = ""
+            }
+        }
+    }
+    func enableBoard() {
+        var piece: Entity
+        for i in 0...7 {
+            for j in 0...7 {
+                if(position[i][j] != "") {
+                    piece = self.game.findEntity(named: position[i][j])!
+                    piece.isEnabled = true
+                    setPiece(pieceName: position[i][j], tx: i, ty: j)
+                }
+            }
+        }
+    }
+    public func setBoard() {
+        if(boardType == 1) {
+            soundEnabled = false
+            clearBoard()
+            curColor = "b"
+            //6k1/pp4p1/2p5/2bp4/8/P5Pb/1P3rrP/2BRRN1K b - - 0 1
+            position[6][0] = "bk"
+            position[0][1] = "bp0"
+            position[1][1] = "bp1"
+            position[6][1] = "bp2"
+            position[2][2] = "bp3"
+            position[2][3] = "bb0"
+            position[3][3] = "bp4"
+            position[0][5] = "wp0"
+            position[6][5] = "wp1"
+            position[7][5] = "bb1"
+            position[1][6] = "wp2"
+            position[5][6] = "br0"
+            position[6][6] = "br1"
+            position[7][6] = "wp3"
+            position[2][7] = "wb0"
+            position[3][7] = "wr0"
+            position[4][7] = "wr1"
+            position[5][7] = "wn0"
+            position[7][7] = "wk"
+            enableBoard()
+
+
+        }
+        if(boardType == 2) {
+            soundEnabled = false
+            clearBoard()
+            curColor = "b"
+            //8/2k2p2/2b3p1/P1p1Np2/1p3b2/1P1K4/5r2/R3R3 b
+            position[3][1] = "bk"
+            position[5][1] = "bp0"
+            position[2][2] = "bb0"
+            position[6][2] = "bp1"
+            position[0][3] = "wp0"
+            position[2][3] = "bp2"
+            position[4][3] = "wn0"
+            position[5][3] = "bp3"
+            position[1][4] = "bp4"
+            position[5][4] = "bb1"
+            position[1][5] = "wp1"
+            position[3][5] = "wk"
+            position[5][6] = "br0"
+            position[0][7] = "wr0"
+            position[4][7] = "wr1"
+            enableBoard()
+
         }
     }
 }

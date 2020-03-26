@@ -65,6 +65,7 @@ extension ViewController {
         
         font=UIFont(name: defaultFont, size: 12)
         hintButton.setTitle("?", for: .normal)
+        hintButton.setImage(hintImg, for: .normal)
         hintButton.setTitleColor(UIColor.green, for: .normal)
         hintButton.addTarget(self, action: #selector(hinted(sender:)), for: .touchUpInside)
         self.view.addSubview(hintButton)
@@ -78,8 +79,8 @@ extension ViewController {
         
         sessionInfoLabel.font = font
         sessionInfoLabel.textAlignment = .center
-        sessionInfoLabel.backgroundColor = .black
-        sessionInfoLabel.textColor = .white
+        sessionInfoLabel.backgroundColor = .lightGray
+        sessionInfoLabel.textColor = .black
         //sessionInfoLabel.sizeToFit()
         sessionInfoLabel.adjustsFontSizeToFitWidth = true
         self.view.addSubview(sessionInfoLabel)
@@ -93,8 +94,8 @@ extension ViewController {
         
         banner.font = font
         banner.textAlignment = .center
-        banner.backgroundColor = .black
-        banner.textColor = .white
+        banner.backgroundColor = .lightGray
+        banner.textColor = .black
         //banner.sizeToFit()
         banner.adjustsFontSizeToFitWidth = true
         self.view.addSubview(banner)
@@ -147,8 +148,8 @@ extension ViewController {
         
         fenBanner.font = font
         fenBanner.textAlignment = .left
-        fenBanner.backgroundColor = .black
-        fenBanner.textColor = .white
+        fenBanner.backgroundColor = .lightGray
+        fenBanner.textColor = .black
         fenBanner.lineBreakMode = .byWordWrapping
         fenBanner.text = ""
         fenBanner.sizeToFit()
@@ -164,8 +165,8 @@ extension ViewController {
         
         recordBanner.font = font
         recordBanner.textAlignment = .left
-        recordBanner.backgroundColor = .black
-        recordBanner.textColor = .white
+        recordBanner.backgroundColor = .lightGray
+        recordBanner.textColor = .black
         recordBanner.lineBreakMode = .byWordWrapping
         recordBanner.text = ""
         recordBanner.sizeToFit()

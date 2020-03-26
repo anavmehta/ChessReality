@@ -24,6 +24,7 @@ public class ViewController: UIViewController, EngineManagerDelegate {
     let audioFilePathSafe = Bundle.main.path(forResource:"mallert 008", ofType: "mp3")
     let audioFilePathWon = Bundle.main.path(forResource:"crowd", ofType: "mp3")
     var bestMoveNext: String! = ""
+    var boardType: Int = 0
     var finishedAnalyzing: Bool = true {
         didSet {
             if(finishedAnalyzing == true) {
@@ -39,10 +40,11 @@ public class ViewController: UIViewController, EngineManagerDelegate {
     var recordBanner:UILabel! = UILabel()
     var fenBanner:UILabel! = UILabel()
     var sessionInfoLabel: UILabel! = UILabel()
-    let items = ["Single device", "Play with Computer", "Play with opponent"]
+    let items = ["Single Device", "Play With Computer", "Play With Opponent"]
     var customSC: UISegmentedControl!
     var peerSessionIDs = [MCPeerID: String]()
     var hintButton: UIButton! = UIButton()
+    public let hintImg = UIImage(named: "iconfinder_bulb_1511312")
     
     var gameFen: String = "position fen rnbqkbnr/pppp1ppp/8/4p3/3P4/8/PPP1PPPP/RNBQKBNR w KQkq -"
     var castling: String = "-"
@@ -157,6 +159,7 @@ public class ViewController: UIViewController, EngineManagerDelegate {
         allowMultipeerPlay = false
         if(mode == .Computer) {allowComputerPlay = true}
         else if(mode == .MultiDevice) {allowMultipeerPlay = true}
+        restartGame()
     }
     func play() {
         restartGame()
@@ -175,15 +178,18 @@ public class ViewController: UIViewController, EngineManagerDelegate {
         curColor = "w"
         recordBanner.text = ""
         fenBanner.text = ""
-        banner.text = ""
+        banner.text = "Tap on a horizontal surface to place chessboard"
         peerIdLabel.text = ""
         sessionInfoLabel.text = ""
+        selectedPiece = nil
+        startPosXY = (-1,-1)
+        endPosXY = (-1,-1)
         if(allowMultipeerPlay) {
             setupMultipeerSession()
             banner.text = "Wait for participants to join"
         }
         if(allowComputerPlay) {
-            banner.text = "Tap on a horizontal surface and to place chessboard"
+            banner.text = "Tap on a horizontal surface to place chessboard"
             setupChessEngine()
         }
     }
@@ -207,8 +213,10 @@ public class ViewController: UIViewController, EngineManagerDelegate {
         // Configure the AR session for horizontal plane tracking.
         let arConfiguration = ARWorldTrackingConfiguration()
         arConfiguration.planeDetection = .horizontal
-        //arConfiguration.isLightEstimationEnabled = true
+        arConfiguration.isLightEstimationEnabled = true
         arConfiguration.isCollaborationEnabled = true
+        arView.debugOptions = [.showFeaturePoints]
+        //arView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
         arView.session.run(arConfiguration)
     }
     
@@ -263,10 +271,10 @@ public class ViewController: UIViewController, EngineManagerDelegate {
         }
         sessionInfoLabel.text = ""
         
-        
         if let result = arView.raycast(
             from: touchInView,
-            allowing: .estimatedPlane, alignment: .horizontal
+            //allowing: .estimatedPlane, alignment: .horizontal
+            allowing:. existingPlaneGeometry, alignment: .horizontal
         ).first {
             if(!modelTapped && !planeAnchorAdded) {
                 if(!allowMultipeerPlay || ((multipeerSession != nil) &&
