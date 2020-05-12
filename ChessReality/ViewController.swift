@@ -180,10 +180,19 @@ public class ViewController: UIViewController, EngineManagerDelegate {
         fenBanner.text = ""
         banner.text = "Tap on a horizontal surface to place chessboard"
         peerIdLabel.text = ""
+        peerIdLabel.backgroundColor = .clear
         sessionInfoLabel.text = ""
         selectedPiece = nil
         startPosXY = (-1,-1)
         endPosXY = (-1,-1)
+        if(multipeerSession != nil && !multipeerSession.connectedPeers.isEmpty) {
+            guard let myData = "left".data(using: .ascii) else {
+                return
+            }
+            multipeerSession.sendToAllPeers(myData)
+            multipeerSession.disconnect()
+        }
+        multipeerSession = nil
         if(allowMultipeerPlay) {
             setupMultipeerSession()
             banner.text = "Wait for participants to join"
