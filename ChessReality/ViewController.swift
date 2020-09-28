@@ -299,8 +299,14 @@ public class ViewController: UIViewController, EngineManagerDelegate {
                     
                     if(allowMultipeerPlay && !multipeerSession.connectedPeers.isEmpty) {
                         peerIdLabel.text = id(str: "\(String(describing: multipeerSession.clientPeerID))")
-                        if(self.owner) {banner.text = "You are white"}
-                        else {banner.text = "You are black"}
+                        if(self.owner) {
+                            banner.text = "You are white"
+                            peerToPlay = false
+                        }
+                        else {
+                            banner.text = "You are black"
+                            peerToPlay = true
+                        }
                         idLabel.backgroundColor = .green
                         peerIdLabel.backgroundColor = .green
                     }
@@ -378,6 +384,9 @@ public class ViewController: UIViewController, EngineManagerDelegate {
             
             if(!selectedBoard || (selectedPiece == nil)) {return}
             if(!isValidMove(coord: (endPosXY.0, endPosXY.1), coords: moves)) {
+                alertController.message = "Not a valid move"
+                self.present(alertController, animated: true, completion: nil)
+                playSound(sound: 0)
                 selectedBoard = false
                 return
             }
